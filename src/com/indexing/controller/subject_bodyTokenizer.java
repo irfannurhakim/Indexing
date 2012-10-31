@@ -1,0 +1,91 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.indexing.controller;
+
+import java.util.HashMap;
+
+/**
+ *
+ * @author user
+ */
+public class subject_bodyTokenizer {
+
+    private static final String EMAIL_PATTERN =
+            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    /**
+     * author: Elisafina method untuk melakukan tokenisasi untuk field subject
+     * dan body kemudian hasilnya ditampung pada hashmap yang berisi term dan
+     * jumlah kemunculan term pada dokumen tertentu.
+     *
+     * @param data
+     * @return
+     */
+    public static HashMap<String, String> getListTerm(String data) {
+        HashMap<String, String> termList = new HashMap<String, String>();
+
+        data = Parser.removeHTMLTag(data);
+        String[] ax = data.split("\\s+|, ");
+        long pos=0;
+        for (String s : ax) {
+            
+            if (s.length()<=50) {
+
+            s = Parser.removeApostrope(s);
+            s = Parser.removeHypenate(s);
+            s = Parser.removePuncuation(s);
+            
+            if(!s.equals(""))
+            {
+                if ( !s.matches("[a-zA-Z0-9]+")) {
+
+                    String[] slices = s.split("\\s");
+                    for (String slice : slices) {
+                        if (slice.matches("[a-zA-Z0-9]+") && slice.length()<=30 ) {
+                            pos++;
+                            putToHashMap(slice, termList,pos);
+                        }
+                    }
+                } else {
+                     
+                    if(s.length()<=30)
+                    {
+                    pos++;
+                    putToHashMap(s, termList,pos);
+                    }
+                
+                }
+            }
+            }
+            //} else {
+            //   System.out.println(s);
+            //}
+
+        }
+        //System.out.println(termList);
+        return termList;
+    }
+
+    /**
+     * author: Elisafina method untuk memasukan sebuah token ke hashmap dengan
+     * pengecekan, jika token tersebut sudah pernah ada maka value-nya akan
+     * ditambah 1
+     *
+     * @param key
+     * @param map
+     */
+    public static void putToHashMap(String key, HashMap<String, String> map, long pos) {
+
+        String freq =  map.get(key);
+                if (freq == null) {
+                    freq = pos+" ";
+                } else {
+                    String value = freq;
+                    freq += pos+" ";
+                }
+                map.put(key, freq);
+    }
+}
