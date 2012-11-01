@@ -64,9 +64,9 @@ public class FileReader implements Callable {
         /*
          * raw -> array 0 head, array 1 tail
          */
-        
+
         String[] raw = line.split("mime-version: ", 2);
-        
+
         String[] rawh = raw[0].split("date: ", 2);
         String idEmail = rawh[0].replace("[message-id: <", "").replace(">,", "");
         String[] date = rawh[1].split("from: ", 2);
@@ -109,28 +109,27 @@ public class FileReader implements Callable {
         HashMap<String, String> toMap = toTokenizer.getListTo(to[0]);
         //System.out.println(toMap);
         //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.toConcurentMap, toMap);
-        
+
         //System.out.println("to" + to[0]);
-        
+
         if (to.length == 1) {
             to[1] = "";
         }
-        
-        if(to[1].contains("cc: "))
-        {
-            to[1]= to[1].split("cc: ",2)[0];
+
+        if (to[1].contains("cc: ")) {
+            to[1] = to[1].split("cc: ", 2)[0];
         }
-        if(to[1] == null){
+        if (to[1] == null) {
             to[1] = "";
         }
-        
+
 
         HashMap<String, String> subjectMap = subject_bodyTokenizer.getListTerm(to[1]);
         //System.out.println(path.toString()+"===="+subjectMap);
         //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.subjectConcurentMap, subjectMap);
         //System.out.println("subjet" + to[1]);
-        
-        
+
+
         String[] body = raw[1].split("(\\.pst)|(\\.nsf)", 2);
         if (body.length == 1) {
             body[1] = "";
@@ -140,29 +139,28 @@ public class FileReader implements Callable {
         //System.out.println(bodyMap);
         //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.bodyConcurentMap, bodyMap);
         //System.out.println("body" + body[1]);
-        
+
         HashMap<String, Integer> allFieldMap;// = AllFieldTokenizer.allFieldTermList(dateMap, toMap, fromMap, subjectMap, bodyMap);        
         //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.allConcurentMap, allFieldMap);
         //System.out.println(allFieldMap);
 
 
         //System.out.println(path.toString());
-        synchronized(Tokenizer.docMapping)
-        {
+        synchronized (Tokenizer.docMapping) {
             try {
-                 Tokenizer.docID++;
-            Tokenizer.docMapping.seek(Tokenizer.docMapping.length());
-            System.out.println(path.toString());
-            String temp = Tokenizer.docID+"|"+idEmail+"|"+path.toString()+"\r\n";
-            Tokenizer.docMapping.write(temp.getBytes());
-            //Tokenizer.docMapping.close();
-            System.out.println("aaaaa");
+                Tokenizer.docID++;
+                Tokenizer.docMapping.seek(Tokenizer.docMapping.length());
+                //System.out.println(path.toString());
+                String temp = Tokenizer.docID + "|" + idEmail + "|" + path.toString() + "\r\n";
+                Tokenizer.docMapping.write(temp.getBytes());
+                //Tokenizer.docMapping.close();
+                //System.out.println("aaaaa");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-           
+
         }
-        fileWalker.callback(new HashMap<String,Integer>(), new HashMap<String,Integer>(), new HashMap<String,Integer>(), new HashMap<String,Integer>(), new HashMap<String,Integer>(), new HashMap<String,Integer>(), count);
+        fileWalker.callback(new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), count);
         return true;
     }
 }

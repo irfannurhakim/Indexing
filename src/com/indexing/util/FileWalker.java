@@ -108,8 +108,8 @@ public class FileWalker extends SimpleFileVisitor<Path> {
          */
         if (jobDone % 1000 == 0) {
             System.out.println("<==> job done " + jobDone + " from: " + i + " in : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
-            rt.gc();
-            rt.gc();
+            //rt.gc();
+            //rt.gc();
         }
         
         /**
