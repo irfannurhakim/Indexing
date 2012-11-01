@@ -4,7 +4,7 @@
  */
 package com.indexing.model;
 
-import indexing.Tokenizer;
+import indexing.Indexing;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.*;
@@ -126,21 +126,21 @@ public class BigConcurentHashMap {
             Set set = termList.entrySet();
             Iterator it = set.iterator();
             long totAllTerm=0;
-            while (it.hasNext() && i<=Tokenizer.top_k_token) {
+            while (it.hasNext() && i<=Indexing.top_k_token) {
                 Map.Entry me = (Map.Entry) it.next();
                 String newKey = (String) me.getKey();
                 TermCounter newval = (TermCounter) me.getValue();
-                temp+=Tokenizer.codeName+" "+field+" "+i+" "+newKey+" "+newval.getTotalTerm()+" "+newval.getTotalDocument()+" "+newval.getTokenWeight()+"\r\n";
+                temp+=Indexing.codeName+" "+field+" "+i+" "+newKey+" "+newval.getTotalTerm()+" "+newval.getTotalDocument()+" "+newval.getTokenWeight()+"\r\n";
                 i++;
                 totAllTerm+=newval.getTotalTerm();
             
             }
-            String hasil = Tokenizer.codeName+" "+field+" N "+totalMessage+"\r\n";
-            hasil+=Tokenizer.codeName+" "+field+" TO "+totAllTerm+"\r\n";
-            hasil+=Tokenizer.codeName+" "+field+" UT "+termList.size()+"\r\n";
+            String hasil = Indexing.codeName+" "+field+" N "+totalMessage+"\r\n";
+            hasil+=Indexing.codeName+" "+field+" TO "+totAllTerm+"\r\n";
+            hasil+=Indexing.codeName+" "+field+" UT "+termList.size()+"\r\n";
             hasil+=temp;
             
-            writeToFile(Tokenizer.codeName+" "+field+".txt", hasil);
+            writeToFile(Indexing.codeName+" "+field+".txt", hasil);
     }
     
      /**

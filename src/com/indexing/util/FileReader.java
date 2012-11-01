@@ -10,7 +10,7 @@ import com.indexing.controller.toTokenizer;
 import com.indexing.controller.subject_bodyTokenizer;
 import com.indexing.controller.FromTokenizer;
 import com.indexing.model.BigConcurentHashMap;
-import indexing.Tokenizer;
+import indexing.Indexing;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -146,13 +146,13 @@ public class FileReader implements Callable {
 
 
         //System.out.println(path.toString());
-        synchronized (Tokenizer.docMapping) {
+        synchronized (Indexing.docMapping) {
             try {
-                Tokenizer.docID++;
-                Tokenizer.docMapping.seek(Tokenizer.docMapping.length());
+                Indexing.docID++;
+                Indexing.docMapping.seek(Indexing.docMapping.length());
                 //System.out.println(path.toString());
-                String temp = Tokenizer.docID + "|" + idEmail + "|" + path.toString() + "\r\n";
-                Tokenizer.docMapping.write(temp.getBytes());
+                String temp = Indexing.docID + "|" + idEmail + "|" + path.toString() + "\r\n";
+                Indexing.docMapping.write(temp.getBytes());
                 //Tokenizer.docMapping.close();
                 //System.out.println("aaaaa");
             } catch (Exception e) {

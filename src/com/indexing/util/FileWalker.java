@@ -6,7 +6,7 @@
 package com.indexing.util;
 
 import com.indexing.model.BigConcurentHashMap;
-import indexing.Tokenizer;
+import indexing.Indexing;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -123,20 +123,20 @@ public class FileWalker extends SimpleFileVisitor<Path> {
             /**
              * Calculate all document statistics and print to file
              */ 
-            Tokenizer.N_messagge = i;
+            Indexing.N_messagge = i;
             try {
-                LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(dateList, "date", Tokenizer.N_messagge);
-                LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(fromList, "from", Tokenizer.N_messagge);
-                LinkedHashMap toList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(toList, "to", Tokenizer.N_messagge);
-                LinkedHashMap subjectList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(subjectList, "subject", Tokenizer.N_messagge);
-                LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(bodyList, "body", Tokenizer.N_messagge);
-                LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Tokenizer.N_messagge);
-                BigConcurentHashMap.printStatistic(allList, "all", Tokenizer.N_messagge);
+                LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(dateList, "date", Indexing.N_messagge);
+                LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(fromList, "from", Indexing.N_messagge);
+                LinkedHashMap toList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(toList, "to", Indexing.N_messagge);
+                LinkedHashMap subjectList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(subjectList, "subject", Indexing.N_messagge);
+                LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(bodyList, "body", Indexing.N_messagge);
+                LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);
             } catch (Exception e) {
                 e.printStackTrace();
             }
