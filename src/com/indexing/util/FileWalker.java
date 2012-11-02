@@ -5,11 +5,13 @@
  */
 package com.indexing.util;
 
+import com.indexing.controller.IndexController;
 import com.indexing.model.BigConcurentHashMap;
 import indexing.Indexing;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -125,7 +127,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
              */ 
             Indexing.N_messagge = i;
             try {
-                LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
+                /*LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
                 BigConcurentHashMap.printStatistic(dateList, "date", Indexing.N_messagge);
                 LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Indexing.N_messagge);
                 BigConcurentHashMap.printStatistic(fromList, "from", Indexing.N_messagge);
@@ -136,7 +138,17 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                 LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Indexing.N_messagge);
                 BigConcurentHashMap.printStatistic(bodyList, "body", Indexing.N_messagge);
                 LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);
+                BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);*/
+                
+               
+                IndexController.printTermMap(Indexing.indexDate, Indexing.treeIndexDate, Indexing.termMappingDate);
+                IndexController.printTermMap(Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.termMappingFrom);
+                IndexController.printTermMap(Indexing.indexTo, Indexing.treeIndexTo, Indexing.termMappingTo);
+                IndexController.printTermMap(Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.termMappingSubject);
+                IndexController.printTermMap(Indexing.indexBody, Indexing.treeIndexBody, Indexing.termMappingBody);
+                
+               
+                
             } catch (Exception e) {
                 e.printStackTrace();
             }
