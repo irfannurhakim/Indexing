@@ -47,8 +47,8 @@ public class Indexing {
          */
 
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p\\_sent_mail";
+        String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
+        //String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p\\_sent_mail";
         top_k_token = 100;
         File f1 = new File("document_mapping.txt");
         if(f1.exists())
@@ -62,8 +62,8 @@ public class Indexing {
         }
         docMapping = new RandomAccessFile("document_mapping.txt", "rw");
         invertedIndex = new RandomAccessFile("inverted_index.txt", "rw");
-        /*FileVisitor<Path> fileVisitor = new FileWalker();
-        Files.walkFileTree(Paths.get(root), fileVisitor);*/
+        FileVisitor<Path> fileVisitor = new FileWalker();
+        Files.walkFileTree(Paths.get(root), fileVisitor);
         
        /* IndexController.addTerm("budi1", "susi");
         IndexController.addTerm("budi2", "susi");
