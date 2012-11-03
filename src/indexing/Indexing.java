@@ -75,6 +75,7 @@ public class Indexing {
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
         String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p";
+
         top_k_token = 100;
         File f1;
         
@@ -121,7 +122,6 @@ public class Indexing {
         a.put("satu", "aaaaa");
         a.put("dua", "aaaaa");
         a.put("tiga", "aaaaa");
-        
         HashMap<String,String> b = new HashMap<String,String>();
         b.put("dua", "bbbbb");
         b.put("empat", "aaaaa");
