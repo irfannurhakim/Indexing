@@ -4,9 +4,9 @@
  */
 package com.query.controller;
 
+import indexing.Indexing;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import indexing.Indexing;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +30,13 @@ public class QueryProcessor {
             byte[] buffer = new byte[(int) position.get(1) - Indexing.NEWLINE.getBytes().length];
             file.read(buffer);
             String str = new String(buffer);
-            System.out.println(str);
+            
+            String content = str.split("=")[1];
+            String[] msgs = content.split(" -");
+            System.out.println(term + " FIELD=" + field + " DF=" + msgs.length);
+            for (String string : msgs) {
+                System.out.println("MSG ID = " + string.split("\\|")[0] + " TF=" + string.split("\\|")[1].split("\\s").length + " " + string.split("\\|")[1]);
+            }
         } else {
             System.out.println("Term '" + term + "' Not Found in Field " + field);
         }
