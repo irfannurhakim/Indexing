@@ -25,7 +25,7 @@ public class toTokenizer {
      * @return
      */
     public static HashMap<String, String> getListTo(String to) {
-        HashMap<String, String> termList = new HashMap<String, String>();
+        HashMap<String, String> termList = new HashMap<>();
         String[] terms = to.split("_|\\W");
         long pos=0;
         

@@ -4,7 +4,6 @@
  */
 package indexing;
 
-import com.indexing.controller.IndexController;
 import com.indexing.util.FileWalker;
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
@@ -39,16 +37,16 @@ public class Indexing {
     public static RandomAccessFile invertedIndexBody = null;
     public static RandomAccessFile termMappingBody = null;
     public final static String NEWLINE="\r\n";
-    public static LinkedHashMap<String,Long> indexDate = new LinkedHashMap<String,Long>();
-    public static TreeMap<String,String> treeIndexDate = new TreeMap<String,String>();
-    public static LinkedHashMap<String,Long> indexFrom = new LinkedHashMap<String,Long>();
-    public static TreeMap<String,String> treeIndexFrom = new TreeMap<String,String>();
-    public static LinkedHashMap<String,Long> indexTo = new LinkedHashMap<String,Long>();
-    public static TreeMap<String,String> treeIndexTo = new TreeMap<String,String>();
-    public static LinkedHashMap<String,Long> indexSubject = new LinkedHashMap<String,Long>();
-    public static TreeMap<String,String> treeIndexSubject = new TreeMap<String,String>();
-    public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<String,Long>();
-    public static TreeMap<String,String> treeIndexBody = new TreeMap<String,String>();
+    public static LinkedHashMap<String,Long> indexDate = new LinkedHashMap<>();
+    public static TreeMap<String,String> treeIndexDate = new TreeMap<>();
+    public static LinkedHashMap<String,Long> indexFrom = new LinkedHashMap<>();
+    public static TreeMap<String,String> treeIndexFrom = new TreeMap<>();
+    public static LinkedHashMap<String,Long> indexTo = new LinkedHashMap<>();
+    public static TreeMap<String,String> treeIndexTo = new TreeMap<>();
+    public static LinkedHashMap<String,Long> indexSubject = new LinkedHashMap<>();
+    public static TreeMap<String,String> treeIndexSubject = new TreeMap<>();
+    public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<>();
+    public static TreeMap<String,String> treeIndexBody = new TreeMap<>();
     
     public static String [] fileNames ={"document_mapping.txt", 
         "inverted_index_date.txt","term_mapping_date.txt",
