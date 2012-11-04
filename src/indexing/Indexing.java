@@ -23,7 +23,7 @@ public class Indexing {
 
     public static long N_messagge = 0; // date, to, from, subject, body, all
     public static int top_k_token;
-    public static String codeName = "irfan_elisafina_pandapotan";
+    public static final String codeName = "irfan_elisafina_pandapotan";
     public static long docID = -1;
     public static RandomAccessFile docMapping = null;
     public static RandomAccessFile invertedIndexDate = null;
