@@ -102,8 +102,9 @@ public class Indexing {
         FileVisitor<Path> fileVisitor = new FileWalker();
         Files.walkFileTree(Paths.get(root), fileVisitor);
         
-        /*Indexing.invertedIndex.seek(26212);
-                byte[] buffer = new byte[70-NEWLINE.getBytes().length];
+      
+        /*Indexing.invertedIndex.seek(1536269);
+                byte[] buffer = new byte[3671-NEWLINE.getBytes().length];
                 Indexing.invertedIndex.read(buffer);
                 String str = new String(buffer);
                 System.out.println(str);*/
