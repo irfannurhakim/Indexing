@@ -51,8 +51,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFile(
             Path aFile, BasicFileAttributes aAttrs) throws IOException {
         /**
-         * skip .DS_Store file
-         * Print every 1000 jobs send to worker
+         * skip .DS_Store file Print every 1000 jobs send to worker
          */
         if (!aFile.getFileName().toString().equalsIgnoreCase(".DS_Store")) {
             if (i % 1000 == 0) {
@@ -60,8 +59,8 @@ public class FileWalker extends SimpleFileVisitor<Path> {
             }
             i++;
             /**
-             * Instantiate the worker
-             * send job to worker with parameter directory file and job counter
+             * Instantiate the worker send job to worker with parameter
+             * directory file and job counter
              */
             FileReader task = new FileReader(aFile, i);
             task.setCaller(this);
@@ -106,54 +105,109 @@ public class FileWalker extends SimpleFileVisitor<Path> {
      */
     public void callback(HashMap<String, Integer> date, HashMap<String, Integer> from, HashMap<String, Integer> to, HashMap<String, Integer> subject, HashMap<String, Integer> body, HashMap<String, Integer> allFieldMap, int jobDone) throws InterruptedException {
         /**
-         * Print each 1000 executed job, and run the garbage collector for memory efficiency
+         * Print each 1000 executed job, and run the garbage collector for
+         * memory efficiency
          */
-        if (jobDone % 1000 == 0) {
-            System.out.println("<==> job done " + jobDone + " from: " + i + " in : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
-            //rt.gc();
-            //rt.gc();
-        }
-        
-        /**
-         * Terminate job while all job has finished
-         */
-        if (jobDone >= i) {
-            es.shutdown();
-            es.awaitTermination((long) 100, TimeUnit.MILLISECONDS);
-            
-            
-            /**
-             * Calculate all document statistics and print to file
-             */ 
-            Indexing.N_messagge = i;
-            try {
-                /*LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(dateList, "date", Indexing.N_messagge);
-                LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(fromList, "from", Indexing.N_messagge);
-                LinkedHashMap toList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(toList, "to", Indexing.N_messagge);
-                LinkedHashMap subjectList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(subjectList, "subject", Indexing.N_messagge);
-                LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(bodyList, "body", Indexing.N_messagge);
-                LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Indexing.N_messagge);
-                BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);*/
-                
-               
-                IndexController.printTermMap(Indexing.indexDate, Indexing.treeIndexDate, Indexing.termMappingDate);
-                IndexController.printTermMap(Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.termMappingFrom);
-                IndexController.printTermMap(Indexing.indexTo, Indexing.treeIndexTo, Indexing.termMappingTo);
-                IndexController.printTermMap(Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.termMappingSubject);
-                IndexController.printTermMap(Indexing.indexBody, Indexing.treeIndexBody, Indexing.termMappingBody);
-                
-               
-                
-            } catch (Exception e) {
-                e.printStackTrace();
+        synchronized (Indexing.counterCall) {
+            Indexing.counterCall++;
+            if (Indexing.counterCall % 1000 == 0) {
+                System.out.println("<==> job done " + Indexing.counterCall + " from: " + i + " in : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
+
+                if (Indexing.counterCall % 10000 == 0) {
+
+
+                    System.out.println("masuk1");
+                    Indexing.jumFile++;
+                    BigConcurentHashMap.printPartIndex(BigConcurentHashMap.dateConcurentMap, "tempDate" + Indexing.jumFile + ".txt");
+                    BigConcurentHashMap.printPartIndex(BigConcurentHashMap.fromConcurentMap, "tempFrom" + Indexing.jumFile + ".txt");
+                    BigConcurentHashMap.printPartIndex(BigConcurentHashMap.toConcurentMap, "tempTo" + Indexing.jumFile + ".txt");
+                    BigConcurentHashMap.printPartIndex(BigConcurentHashMap.subjectConcurentMap, "tempSubject" + Indexing.jumFile + ".txt");
+                    BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
+
+                }
+                //rt.gc();
+                //rt.gc();
             }
-             System.out.println("Total execution time : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
-            System.exit(0);
+
+
+
+            /**
+             * Terminate job while all job has finished
+             */
+            if (Indexing.counterCall >= i) {
+                es.shutdown();
+                es.awaitTermination((long) 100, TimeUnit.MILLISECONDS);
+
+
+                /**
+                 * Calculate all document statistics and print to file
+                 */
+                Indexing.N_messagge = i;
+                try {
+                    if (Indexing.counterCall % 10000 != 0) {
+                        System.out.println("masuk2");
+                        Indexing.jumFile++;
+                        BigConcurentHashMap.printPartIndex(BigConcurentHashMap.dateConcurentMap, "tempDate" + Indexing.jumFile + ".txt");
+                        BigConcurentHashMap.printPartIndex(BigConcurentHashMap.fromConcurentMap, "tempFrom" + Indexing.jumFile + ".txt");
+                        BigConcurentHashMap.printPartIndex(BigConcurentHashMap.toConcurentMap, "tempTo" + Indexing.jumFile + ".txt");
+                        BigConcurentHashMap.printPartIndex(BigConcurentHashMap.subjectConcurentMap, "tempSubject" + Indexing.jumFile + ".txt");
+                        BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
+                    }
+
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexDate,"tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexFrom,"tempFrom", Indexing.invertedIndexFrom, Indexing.termMappingFrom);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexTo,"tempTo", Indexing.invertedIndexTo, Indexing.termMappingTo);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexSubject,"tempSubject", Indexing.invertedIndexSubject, Indexing.termMappingSubject);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexBody,"tempBody", Indexing.invertedIndexBody, Indexing.termMappingBody);
+                    /*LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(dateList, "date", Indexing.N_messagge);
+                     LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(fromList, "from", Indexing.N_messagge);
+                     LinkedHashMap toList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(toList, "to", Indexing.N_messagge);
+                     LinkedHashMap subjectList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(subjectList, "subject", Indexing.N_messagge);
+                     LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(bodyList, "body", Indexing.N_messagge);
+                     LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Indexing.N_messagge);
+                     BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);*/
+
+                    /*synchronized (Indexing.invertedIndexDate) {
+                     IndexController.insertDocIndex2(BigConcurentHashMap.dateConcurentMap, Indexing.indexDate, Indexing.treeIndexDate, Indexing.invertedIndexDate);
+                     //BigConcurentHashMap.dateConcurentMap.clear();
+                     //System.out.println(BigConcurentHashMap.dateConcurentMap.size());
+                     }
+                     synchronized (Indexing.invertedIndexFrom) {
+                     IndexController.insertDocIndex2(BigConcurentHashMap.fromConcurentMap, Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.invertedIndexFrom);
+                     //BigConcurentHashMap.fromConcurentMap.clear();
+                     }
+                     synchronized (Indexing.invertedIndexTo) {
+                     IndexController.insertDocIndex2(BigConcurentHashMap.toConcurentMap, Indexing.indexTo, Indexing.treeIndexTo, Indexing.invertedIndexTo);
+                     //BigConcurentHashMap.toConcurentMap.clear();
+                     }
+                     synchronized (Indexing.invertedIndexSubject) {
+                     IndexController.insertDocIndex2(BigConcurentHashMap.subjectConcurentMap, Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.invertedIndexSubject);
+                     //BigConcurentHashMap.subjectConcurentMap.clear();
+                     }
+                     synchronized (Indexing.invertedIndexBody) {
+                     IndexController.insertDocIndex2(BigConcurentHashMap.bodyConcurentMap, Indexing.indexBody, Indexing.treeIndexBody, Indexing.invertedIndexBody);
+                     //BigConcurentHashMap.bodyConcurentMap.clear();
+                     }
+
+                     IndexController.printTermMap(Indexing.indexDate, Indexing.treeIndexDate, Indexing.termMappingDate);
+                     IndexController.printTermMap(Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.termMappingFrom);
+                     IndexController.printTermMap(Indexing.indexTo, Indexing.treeIndexTo, Indexing.termMappingTo);
+                     IndexController.printTermMap(Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.termMappingSubject);
+                     IndexController.printTermMap(Indexing.indexBody, Indexing.treeIndexBody, Indexing.termMappingBody);
+                     */
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Total execution time : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
+                System.exit(0);
+            }
         }
 
     }

@@ -4,7 +4,6 @@
  */
 package indexing;
 
-import com.indexing.controller.IndexController;
 import com.indexing.util.FileWalker;
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
@@ -25,7 +23,7 @@ public class Indexing {
 
     public static long N_messagge = 0; // date, to, from, subject, body, all
     public static int top_k_token;
-    public static String codeName = "irfan_elisafina_pandapotan";
+    public static final String codeName = "irfan_elisafina_pandapotan";
     public static long docID = -1;
     public static RandomAccessFile docMapping = null;
     public static RandomAccessFile invertedIndexDate = null;
@@ -49,6 +47,9 @@ public class Indexing {
     public static TreeMap<String,String> treeIndexSubject = new TreeMap<String,String>();
     public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<String,Long>();
     public static TreeMap<String,String> treeIndexBody = new TreeMap<String,String>();
+    
+    public static Integer counterCall=0;
+    public static int jumFile=0;
     
     public static String [] fileNames ={"document_mapping.txt", 
         "inverted_index_date.txt","term_mapping_date.txt",
@@ -74,7 +75,7 @@ public class Indexing {
 
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p";
+        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\";
 
         top_k_token = 100;
         File f1;
@@ -102,9 +103,8 @@ public class Indexing {
         FileVisitor<Path> fileVisitor = new FileWalker();
         Files.walkFileTree(Paths.get(root), fileVisitor);
         
-      
-        /*Indexing.invertedIndex.seek(1536269);
-                byte[] buffer = new byte[3671-NEWLINE.getBytes().length];
+        /*Indexing.invertedIndex.seek(26212);
+                byte[] buffer = new byte[70-NEWLINE.getBytes().length];
                 Indexing.invertedIndex.read(buffer);
                 String str = new String(buffer);
                 System.out.println(str);*/

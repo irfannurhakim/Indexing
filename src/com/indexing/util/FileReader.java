@@ -66,15 +66,37 @@ public class FileReader implements Callable {
          * raw -> array 0 head, array 1 tail
          */
         try {
+            
+            
             String[] raw = line.split("mime-version: ", 2);
 
             String[] rawh = raw[0].split("date: ", 2);
             String idEmail = rawh[0].replace("[message-id: <", "").replace(">,", "");
+            
+            long docNumber = 0;
+            synchronized (Indexing.docMapping) {
+                try {
+                    Indexing.docID++;
+                    Indexing.docMapping.seek(Indexing.docMapping.length());
+                    //System.out.println(path.toString());
+                    String temp = Indexing.docID + "|" + idEmail + "|" + path.toString() + "\r\n";
+                    Indexing.docMapping.write(temp.getBytes());
+                    docNumber = Indexing.docID;
+                    //Tokenizer.docMapping.close();
+                    //System.out.println("aaaaa");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
             String[] date = rawh[1].split("from: ", 2);
             HashMap<String, String> dateMap = dateTokenizer.getListDate(date[0]);
-            //System.out.println(dateMap);
-            //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.dateConcurentMap, dateMap);
-            //System.out.println("date=" + date[0]);
+           
+            synchronized(Indexing.treeIndexDate)
+            {
+            BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.dateConcurentMap,Indexing.treeIndexDate, dateMap, docNumber);
+            }
+           
 
             if (date.length == 1) {
                 date[1] = "";
@@ -88,8 +110,10 @@ public class FileReader implements Callable {
             }
 
             HashMap<String, String> fromMap = FromTokenizer.getListFrom(from[0].replaceAll(", ", " "));
-            //System.out.println(fromMap);
-            //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.fromConcurentMap, fromMap);
+            synchronized(Indexing.treeIndexFrom)
+            {
+            BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.fromConcurentMap, Indexing.treeIndexFrom, fromMap, docNumber);
+            }
             //System.out.println("from=" + from[0]);
 
             if (from.length == 1) {
@@ -109,7 +133,10 @@ public class FileReader implements Callable {
 
             HashMap<String, String> toMap = toTokenizer.getListTo(to[0]);
             //System.out.println(toMap);
-            //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.toConcurentMap, toMap);
+            synchronized(Indexing.treeIndexTo)
+            {
+            BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.toConcurentMap,Indexing.treeIndexTo, toMap, docNumber);
+            }
 
             //System.out.println("to" + to[0]);
 
@@ -131,18 +158,25 @@ public class FileReader implements Callable {
 
             HashMap<String, String> subjectMap = subject_bodyTokenizer.getListTerm(to[1]);
             //System.out.println(path.toString()+"===="+subjectMap);
-            //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.subjectConcurentMap, subjectMap);
+            synchronized(Indexing.treeIndexSubject)
+            {
+            BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.subjectConcurentMap, Indexing.treeIndexSubject, subjectMap, docNumber);
+            }
             //System.out.println("subjet" + to[1]);
 
 
             String[] body = raw[1].split("(\\.pst)|(\\.nsf)", 2);
             if (body.length == 1) {
-                body[1] = "";
+                body= new String[2];
+                body[0]="";
+                body[1]="";
             }
 
             HashMap<String, String> bodyMap = subject_bodyTokenizer.getListTerm(body[1]);
-            //System.out.println(bodyMap);
-            //BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.bodyConcurentMap, bodyMap);
+            synchronized(Indexing.treeIndexBody)
+            {
+            BigConcurentHashMap.mergeBigHashMap(BigConcurentHashMap.bodyConcurentMap, Indexing.treeIndexBody,bodyMap, docNumber);
+            }
             //System.out.println("body" + body[1]);
 
             HashMap<String, Integer> allFieldMap;// = AllFieldTokenizer.allFieldTermList(dateMap, toMap, fromMap, subjectMap, bodyMap);        
@@ -151,23 +185,8 @@ public class FileReader implements Callable {
 
 
             //System.out.println(path.toString());
-            long docNumber = 0;
-            synchronized (Indexing.docMapping) {
-                try {
-                    Indexing.docID++;
-                    Indexing.docMapping.seek(Indexing.docMapping.length());
-                    //System.out.println(path.toString());
-                    String temp = Indexing.docID + "|" + idEmail + "|" + path.toString() + "\r\n";
-                    Indexing.docMapping.write(temp.getBytes());
-                    docNumber = Indexing.docID;
-                    //Tokenizer.docMapping.close();
-                    //System.out.println("aaaaa");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-            synchronized (Indexing.invertedIndexDate) {
+            
+            /*synchronized (Indexing.invertedIndexDate) {
                 IndexController.insertDocIndex(docNumber, dateMap, Indexing.indexDate, Indexing.treeIndexDate, Indexing.invertedIndexDate);
             }
             synchronized (Indexing.invertedIndexFrom) {
@@ -181,10 +200,12 @@ public class FileReader implements Callable {
             }
             synchronized (Indexing.invertedIndexBody) {
                 IndexController.insertDocIndex(docNumber, bodyMap, Indexing.indexBody, Indexing.treeIndexBody, Indexing.invertedIndexBody);
-            }
+            }*/
             fileWalker.callback(new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), count);
 
         } catch (Exception e) {
+            fileWalker.callback(new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), count);
+
             e.printStackTrace();
         }
         return true;
