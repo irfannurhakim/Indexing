@@ -61,20 +61,20 @@ public class FileReader implements Callable {
     @Override
     public Boolean call()  {
 
-        synchronized(Indexing.test)
-        {
-            Indexing.test.add(this.path.toString());
-        }
+//        synchronized(Indexing.test)
+//        {
+//            Indexing.test.add(this.path.toString());
+//        }
         String line="";
         try {
             line = Files.readAllLines(this.path, StandardCharsets.UTF_8).toString().toLowerCase().replaceAll("x-to|x-from", "");
             //System.out.println(line);
         } catch (IOException ex) {
             System.out.println(ex.toString()+" ---"+this.path.toString());
-            synchronized(Indexing.test)
-        {
-            Indexing.test.remove(this.path.toString());
-        }
+//            synchronized(Indexing.test)
+//        {
+//            Indexing.test.remove(this.path.toString());
+//        }
         }
 
         /*
@@ -207,10 +207,10 @@ public class FileReader implements Callable {
              synchronized (Indexing.invertedIndexBody) {
              IndexController.insertDocIndex(docNumber, bodyMap, Indexing.indexBody, Indexing.treeIndexBody, Indexing.invertedIndexBody);
              }*/
-            synchronized(Indexing.test)
-        {
-            Indexing.test.remove(this.path.toString());
-        }
+//            synchronized(Indexing.test)
+//        {
+//            Indexing.test.remove(this.path.toString());
+//        }
             }
             fileWalker.callback(new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), new HashMap<String, Integer>(), count);
 
