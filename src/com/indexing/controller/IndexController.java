@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,6 +96,34 @@ public class IndexController {
             } else {
                 long pos = getPosition(checkonTree, indexMap);
                 String input = docNumber + "|" + docPos + "-";
+                //System.out.println("line "+term+" ,posisi = "+pos+" , input ="+input.getBytes().length);
+                insertInvertedIndex(input, pos, raf);
+                addTerm(term, input, indexMap, treeMap);
+            }
+        }
+    }
+    
+    public static void insertDocIndex2(ConcurrentHashMap<String, String> map, LinkedHashMap<String, Long> indexMap, TreeMap<String, String> treeMap, RandomAccessFile raf) {
+        Iterator<Entry<String, String>> itr = map.entrySet().iterator();
+        while (itr.hasNext()) {
+            Entry<String, String> entry = itr.next();
+            String term = entry.getKey();
+            String docPos = entry.getValue();
+            // System.out.println(term);
+            String checkonTree = treeMap.get(term);
+            if (checkonTree == null) {
+                try {
+                    long pos = raf.length();
+                    String input = (treeMap.size() + 1) + "=" + docPos + Indexing.NEWLINE;
+                    //System.out.println("new line "+term+" = "+input.getBytes().length);
+                    insertInvertedIndex(input, pos, raf);
+                    addTerm(term, input, indexMap, treeMap);
+                } catch (IOException ex) {
+                    Logger.getLogger(IndexController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                long pos = getPosition(checkonTree, indexMap);
+                String input = docPos;
                 //System.out.println("line "+term+" ,posisi = "+pos+" , input ="+input.getBytes().length);
                 insertInvertedIndex(input, pos, raf);
                 addTerm(term, input, indexMap, treeMap);

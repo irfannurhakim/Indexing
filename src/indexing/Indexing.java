@@ -12,7 +12,9 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -37,16 +39,20 @@ public class Indexing {
     public static RandomAccessFile invertedIndexBody = null;
     public static RandomAccessFile termMappingBody = null;
     public final static String NEWLINE="\r\n";
-    public static LinkedHashMap<String,Long> indexDate = new LinkedHashMap<>();
-    public static TreeMap<String,String> treeIndexDate = new TreeMap<>();
-    public static LinkedHashMap<String,Long> indexFrom = new LinkedHashMap<>();
-    public static TreeMap<String,String> treeIndexFrom = new TreeMap<>();
-    public static LinkedHashMap<String,Long> indexTo = new LinkedHashMap<>();
-    public static TreeMap<String,String> treeIndexTo = new TreeMap<>();
-    public static LinkedHashMap<String,Long> indexSubject = new LinkedHashMap<>();
-    public static TreeMap<String,String> treeIndexSubject = new TreeMap<>();
-    public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<>();
-    public static TreeMap<String,String> treeIndexBody = new TreeMap<>();
+    public static LinkedHashMap<String,Long> indexDate = new LinkedHashMap<String,Long>();
+    public static TreeMap<String,String> treeIndexDate = new TreeMap<String,String>();
+    public static LinkedHashMap<String,Long> indexFrom = new LinkedHashMap<String,Long>();
+    public static TreeMap<String,String> treeIndexFrom = new TreeMap<String,String>();
+    public static LinkedHashMap<String,Long> indexTo = new LinkedHashMap<String,Long>();
+    public static TreeMap<String,String> treeIndexTo = new TreeMap<String,String>();
+    public static LinkedHashMap<String,Long> indexSubject = new LinkedHashMap<String,Long>();
+    public static TreeMap<String,String> treeIndexSubject = new TreeMap<String,String>();
+    public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<String,Long>();
+    public static TreeMap<String,String> treeIndexBody = new TreeMap<String,String>();
+    
+    public static List<String> test = new ArrayList<>();
+    public static Integer counterCall=0;
+    public static int jumFile=0;
     
     public static String [] fileNames ={"document_mapping.txt", 
         "inverted_index_date.txt","term_mapping_date.txt",
@@ -72,7 +78,7 @@ public class Indexing {
 
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p";
+        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\";
 
         top_k_token = 100;
         File f1;
