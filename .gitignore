@@ -2,3 +2,5 @@
 build.xml
 build/
 *.txt
+/PBOL_Restful/nbproject/private/
+/PBOL_RESTclient/nbproject/private/

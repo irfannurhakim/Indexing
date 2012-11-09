@@ -110,6 +110,15 @@ public class FileWalker extends SimpleFileVisitor<Path> {
          */
         synchronized (Indexing.counterCall) {
             Indexing.counterCall++;
+            synchronized(Indexing.test)
+        {
+            if(Indexing.test.size()>=4)
+            {
+                System.out.println(Indexing.test);
+            }
+        }
+            
+            
             if (Indexing.counterCall % 1000 == 0) {
                 System.out.println("<==> job done " + Indexing.counterCall + " from: " + i + " in : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
 
@@ -123,6 +132,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                     BigConcurentHashMap.printPartIndex(BigConcurentHashMap.toConcurentMap, "tempTo" + Indexing.jumFile + ".txt");
                     BigConcurentHashMap.printPartIndex(BigConcurentHashMap.subjectConcurentMap, "tempSubject" + Indexing.jumFile + ".txt");
                     BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
+                    rt.gc();
 
                 }
                 //rt.gc();
@@ -152,6 +162,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                         BigConcurentHashMap.printPartIndex(BigConcurentHashMap.toConcurentMap, "tempTo" + Indexing.jumFile + ".txt");
                         BigConcurentHashMap.printPartIndex(BigConcurentHashMap.subjectConcurentMap, "tempSubject" + Indexing.jumFile + ".txt");
                         BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
+                        rt.gc();
                     }
 
                     BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexDate,"tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate);

@@ -12,7 +12,9 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -48,6 +50,7 @@ public class Indexing {
     public static LinkedHashMap<String,Long> indexBody = new LinkedHashMap<String,Long>();
     public static TreeMap<String,String> treeIndexBody = new TreeMap<String,String>();
     
+    public static List<String> test = new ArrayList<>();
     public static Integer counterCall=0;
     public static int jumFile=0;
     

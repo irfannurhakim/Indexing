@@ -26,8 +26,9 @@ public class subject_bodyTokenizer {
      */
     public static HashMap<String, String> getListTerm(String data) {
         HashMap<String, String> termList = new HashMap<String, String>();
-
+        //System.out.println("bbb");
         data = Parser.removeHTMLTag(data);
+        //System.out.println("aaaa");
         String[] ax = data.split("\\s+|, ");
         long pos=0;
         for (String s : ax) {

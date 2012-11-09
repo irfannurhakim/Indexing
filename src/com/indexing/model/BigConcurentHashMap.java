@@ -40,8 +40,9 @@ public class BigConcurentHashMap {
      */
     public static void mergeBigHashMap(ConcurrentSkipListMap<Long, String> a, TreeMap<String, String> tree, HashMap<String, String> b, long docNumber) {
         // Get a set of the entries 
-
-        if (b != null) {
+        //System.out.println(b);
+        try {
+            if (b != null) {
             Set set = b.entrySet();
             Iterator i = set.iterator();
             while (i.hasNext()) {
@@ -97,6 +98,10 @@ public class BigConcurentHashMap {
             }
 
         }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
     public static void printPartIndex(ConcurrentSkipListMap<Long, String> a, String fileName) {
