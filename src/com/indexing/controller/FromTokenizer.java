@@ -34,10 +34,10 @@ public class FromTokenizer {
                 String freq = (String) termList.get(key);
                 pos++;
                 if (freq == null) {
-                    freq = pos+" ";
+                    freq = pos+",";
                 } else {
                     String value = freq;
-                    freq += pos+" ";
+                    freq += pos+",";
                 }
                 termList.put(key, freq);
             }

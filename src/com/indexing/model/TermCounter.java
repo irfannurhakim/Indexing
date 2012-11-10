@@ -4,8 +4,6 @@
  */
 package com.indexing.model;
 
-import java.util.Comparator;
-
 /**
  *
  * @author user

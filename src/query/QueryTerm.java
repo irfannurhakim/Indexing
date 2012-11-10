@@ -25,10 +25,8 @@ public class QueryTerm {
         
         String field = args[1].split(":")[0];
         String term = args[1].split(":")[1];
-        // String field = "body";
-        //String term = "enron";
-
-        QueryProcessor.doQuery(field, term);
+        
+        QueryProcessor.doQuery(field, term, args[0]);
         
     }
 }

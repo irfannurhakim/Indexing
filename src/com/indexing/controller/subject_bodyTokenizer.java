@@ -30,36 +30,34 @@ public class subject_bodyTokenizer {
         data = Parser.removeHTMLTag(data);
         //System.out.println("aaaa");
         String[] ax = data.split("\\s+|, ");
-        long pos=0;
+        long pos = 0;
         for (String s : ax) {
-            
-            if (s.length()<=50) {
 
-            s = Parser.removeApostrope(s);
-            s = Parser.removeHypenate(s);
-            s = Parser.removePuncuation(s);
-            
-            if(!s.equals(""))
-            {
-                if ( !s.matches("[a-zA-Z0-9]+")) {
+            if (s.length() <= 50) {
 
-                    String[] slices = s.split("\\s");
-                    for (String slice : slices) {
-                        if (slice.matches("[a-zA-Z0-9]+") && slice.length()<=30 ) {
-                            pos++;
-                            putToHashMap(slice, termList,pos);
+                s = Parser.removeApostrope(s);
+                s = Parser.removeHypenate(s);
+                s = Parser.removePuncuation(s);
+
+                if (!s.equals("")) {
+                    if (!s.matches("[a-zA-Z0-9]+")) {
+
+                        String[] slices = s.split("\\s");
+                        for (String slice : slices) {
+                            if (slice.matches("[a-zA-Z0-9]+") && slice.length() <= 30) {
+                                pos++;
+                                putToHashMap(slice, termList, pos);
+                            }
                         }
+                    } else {
+
+                        if (s.length() <= 30) {
+                            pos++;
+                            putToHashMap(s, termList, pos);
+                        }
+
                     }
-                } else {
-                     
-                    if(s.length()<=30)
-                    {
-                    pos++;
-                    putToHashMap(s, termList,pos);
-                    }
-                
                 }
-            }
             }
             //} else {
             //   System.out.println(s);
@@ -80,13 +78,15 @@ public class subject_bodyTokenizer {
      */
     public static void putToHashMap(String key, HashMap<String, String> map, long pos) {
 
-        String freq =  map.get(key);
-                if (freq == null) {
-                    freq = pos+" ";
-                } else {
-                    String value = freq;
-                    freq += pos+" ";
-                }
-                map.put(key, freq);
+        String freq = map.get(key);
+        if (freq == null) {
+            freq = pos + ",";
+        } else {
+            String value = freq;
+            freq += pos + ",";
+        }
+        map.put(key, freq);
+
+
     }
 }

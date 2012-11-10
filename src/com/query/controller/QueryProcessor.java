@@ -19,13 +19,14 @@ public class QueryProcessor {
 
     private static final String PREFIX_INDEX_FILENAME = "inverted_index_";
     private static final String PREFIX_TERM_MAPPING_FILENAME = "term_mapping_";
+    private static final String DOC_MAPPING = "document_mapping.txt";
 
-    public static void doQuery(String field, String term) throws IOException {
+    public static void doQuery(String field, String term, String path) throws IOException {
 
-        String indexFileName = PREFIX_INDEX_FILENAME + field + ".txt";
+        String indexFileName = path + PREFIX_INDEX_FILENAME + field + ".txt";
 
         RandomAccessFile file = new RandomAccessFile(indexFileName, "r");
-        ArrayList<Object> position = getPositionTerm(field, term);
+        ArrayList<Object> position = getPositionTerm(field, term, path);
 
         if (position.size() == 3) {
             file.seek((Long) position.get(0));
@@ -33,11 +34,11 @@ public class QueryProcessor {
             file.read(buffer);
             String str = new String(buffer);
             String content = str.split("=")[1];
-            String[] msgs = content.split(" -");
+            String[] msgs = content.split(";");
 
             String toWrite = term + " FIELD=" + field + " DF=" + msgs.length + "\r\n";
             for (String string : msgs) {
-                toWrite += "MSG ID=" + string.split("\\|")[0] + " TF=" + string.split("\\|")[1].split("\\s").length + " " + string.split("\\|")[1] + "\r\n";
+                toWrite += "MSG ID=" + messageIdTranslation(string.split(":")[0], path) + " TF=" + string.split(":")[1].split(",").length + " " + string.split(":")[1] + "\r\n";
             }
             writeFile(toWrite, field, term);
         } else {
@@ -45,8 +46,8 @@ public class QueryProcessor {
         }
     }
 
-    private static ArrayList<Object> getPositionTerm(String field, String term) throws IOException {
-        String termMappingFileName = PREFIX_TERM_MAPPING_FILENAME + field + ".txt";
+    private static ArrayList<Object> getPositionTerm(String field, String term, String path) throws IOException {
+        String termMappingFileName = path + PREFIX_TERM_MAPPING_FILENAME + field + ".txt";
 
         RandomAccessFile file = new RandomAccessFile(termMappingFileName, "r");
         ArrayList<Object> ret = new ArrayList<>();
@@ -67,7 +68,6 @@ public class QueryProcessor {
         long beg = 0;
         long end = file.length();
         boolean found = false;
-        long foundb = 0;
         while (beg <= end) {
             /*
              * find the mid point.
@@ -105,9 +105,42 @@ public class QueryProcessor {
     }
 
     private static void writeFile(String textToWrite, String field, String term) throws IOException {
-        try (FileChannel rwChannel = new RandomAccessFile(Indexing.codeName + "-" +  field + "-" + term + ".txt", "rw").getChannel()) {
+        try (FileChannel rwChannel = new RandomAccessFile(Indexing.codeName + "-" + field + "-" + term + ".txt", "rw").getChannel()) {
             ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, textToWrite.length());
             wrBuf.put(textToWrite.getBytes());
+        }
+    }
+
+    private static String messageIdTranslation(String idDocs, String path) throws IOException {
+        String termMappingFileName = path + DOC_MAPPING;
+        RandomAccessFile file = new RandomAccessFile(termMappingFileName, "r");
+        long beg = 0, mid = 0;
+        long end = file.length();
+        boolean found = false;
+        while (beg < end && !found) {
+            mid = (beg + end) / 2;
+            file.seek(mid);
+            file.readLine();
+            String line = file.readLine().split("=")[0];
+
+            if (line.matches(idDocs)) {
+                found = true;
+                beg = mid;
+            } else {
+                if (Integer.valueOf(line) >= Integer.valueOf(idDocs)) {
+                    end = mid - 1;
+                } else {
+                    beg = mid + 1;
+                }
+            }
+        }
+
+        if (found) {
+            file.seek(beg);
+            file.readLine();
+            return file.readLine().split("=")[1];
+        } else {
+            return "null";
         }
     }
 }

@@ -5,19 +5,14 @@
  */
 package com.indexing.util;
 
-import com.indexing.controller.IndexController;
 import com.indexing.model.BigConcurentHashMap;
 import indexing.Indexing;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -110,15 +105,13 @@ public class FileWalker extends SimpleFileVisitor<Path> {
          */
         synchronized (Indexing.counterCall) {
             Indexing.counterCall++;
-            synchronized(Indexing.test)
-        {
-            if(Indexing.test.size()>=4)
-            {
-                System.out.println(Indexing.test);
+            synchronized (Indexing.test) {
+                if (Indexing.test.size() >= 4) {
+                    System.out.println(Indexing.test);
+                }
             }
-        }
-            
-            
+
+
             if (Indexing.counterCall % 1000 == 0) {
                 System.out.println("<==> job done " + Indexing.counterCall + " from: " + i + " in : " + ((System.nanoTime() - startTime) / 1000000000.0) + " secs");
 
@@ -133,7 +126,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                     BigConcurentHashMap.printPartIndex(BigConcurentHashMap.subjectConcurentMap, "tempSubject" + Indexing.jumFile + ".txt");
                     BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
                     rt.gc();
-
+                    rt.gc();
                 }
                 //rt.gc();
                 //rt.gc();
@@ -165,51 +158,76 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                         rt.gc();
                     }
 
-                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexDate,"tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate);
-                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexFrom,"tempFrom", Indexing.invertedIndexFrom, Indexing.termMappingFrom);
-                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexTo,"tempTo", Indexing.invertedIndexTo, Indexing.termMappingTo);
-                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexSubject,"tempSubject", Indexing.invertedIndexSubject, Indexing.termMappingSubject);
-                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexBody,"tempBody", Indexing.invertedIndexBody, Indexing.termMappingBody);
-                    /*LinkedHashMap dateList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(dateList, "date", Indexing.N_messagge);
-                     LinkedHashMap fromList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(fromList, "from", Indexing.N_messagge);
-                     LinkedHashMap toList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(toList, "to", Indexing.N_messagge);
-                     LinkedHashMap subjectList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(subjectList, "subject", Indexing.N_messagge);
-                     LinkedHashMap bodyList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(bodyList, "body", Indexing.N_messagge);
-                     LinkedHashMap allList = BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap, Indexing.N_messagge);
-                     BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);*/
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexDate, "tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexFrom, "tempFrom", Indexing.invertedIndexFrom, Indexing.termMappingFrom);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexTo, "tempTo", Indexing.invertedIndexTo, Indexing.termMappingTo);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexSubject, "tempSubject", Indexing.invertedIndexSubject, Indexing.termMappingSubject);
+                    BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexBody, "tempBody", Indexing.invertedIndexBody, Indexing.termMappingBody);
+                    /*
+                     * LinkedHashMap dateList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.dateConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(dateList, "date",
+                     * Indexing.N_messagge); LinkedHashMap fromList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.fromConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(fromList, "from",
+                     * Indexing.N_messagge); LinkedHashMap toList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.toConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(toList, "to",
+                     * Indexing.N_messagge); LinkedHashMap subjectList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.subjectConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(subjectList,
+                     * "subject", Indexing.N_messagge); LinkedHashMap bodyList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.bodyConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(bodyList, "body",
+                     * Indexing.N_messagge); LinkedHashMap allList =
+                     * BigConcurentHashMap.calculateTermWight(BigConcurentHashMap.allConcurentMap,
+                     * Indexing.N_messagge);
+                     * BigConcurentHashMap.printStatistic(allList, "all", Indexing.N_messagge);
+                     */
 
-                    /*synchronized (Indexing.invertedIndexDate) {
-                     IndexController.insertDocIndex2(BigConcurentHashMap.dateConcurentMap, Indexing.indexDate, Indexing.treeIndexDate, Indexing.invertedIndexDate);
-                     //BigConcurentHashMap.dateConcurentMap.clear();
-                     //System.out.println(BigConcurentHashMap.dateConcurentMap.size());
-                     }
-                     synchronized (Indexing.invertedIndexFrom) {
-                     IndexController.insertDocIndex2(BigConcurentHashMap.fromConcurentMap, Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.invertedIndexFrom);
-                     //BigConcurentHashMap.fromConcurentMap.clear();
-                     }
-                     synchronized (Indexing.invertedIndexTo) {
-                     IndexController.insertDocIndex2(BigConcurentHashMap.toConcurentMap, Indexing.indexTo, Indexing.treeIndexTo, Indexing.invertedIndexTo);
-                     //BigConcurentHashMap.toConcurentMap.clear();
-                     }
-                     synchronized (Indexing.invertedIndexSubject) {
-                     IndexController.insertDocIndex2(BigConcurentHashMap.subjectConcurentMap, Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.invertedIndexSubject);
-                     //BigConcurentHashMap.subjectConcurentMap.clear();
-                     }
-                     synchronized (Indexing.invertedIndexBody) {
-                     IndexController.insertDocIndex2(BigConcurentHashMap.bodyConcurentMap, Indexing.indexBody, Indexing.treeIndexBody, Indexing.invertedIndexBody);
-                     //BigConcurentHashMap.bodyConcurentMap.clear();
-                     }
-
-                     IndexController.printTermMap(Indexing.indexDate, Indexing.treeIndexDate, Indexing.termMappingDate);
-                     IndexController.printTermMap(Indexing.indexFrom, Indexing.treeIndexFrom, Indexing.termMappingFrom);
-                     IndexController.printTermMap(Indexing.indexTo, Indexing.treeIndexTo, Indexing.termMappingTo);
-                     IndexController.printTermMap(Indexing.indexSubject, Indexing.treeIndexSubject, Indexing.termMappingSubject);
-                     IndexController.printTermMap(Indexing.indexBody, Indexing.treeIndexBody, Indexing.termMappingBody);
+                    /*
+                     * synchronized (Indexing.invertedIndexDate) {
+                     * IndexController.insertDocIndex2(BigConcurentHashMap.dateConcurentMap,
+                     * Indexing.indexDate, Indexing.treeIndexDate,
+                     * Indexing.invertedIndexDate);
+                     * //BigConcurentHashMap.dateConcurentMap.clear();
+                     * //System.out.println(BigConcurentHashMap.dateConcurentMap.size());
+                     * } synchronized (Indexing.invertedIndexFrom) {
+                     * IndexController.insertDocIndex2(BigConcurentHashMap.fromConcurentMap,
+                     * Indexing.indexFrom, Indexing.treeIndexFrom,
+                     * Indexing.invertedIndexFrom);
+                     * //BigConcurentHashMap.fromConcurentMap.clear(); }
+                     * synchronized (Indexing.invertedIndexTo) {
+                     * IndexController.insertDocIndex2(BigConcurentHashMap.toConcurentMap,
+                     * Indexing.indexTo, Indexing.treeIndexTo,
+                     * Indexing.invertedIndexTo);
+                     * //BigConcurentHashMap.toConcurentMap.clear(); }
+                     * synchronized (Indexing.invertedIndexSubject) {
+                     * IndexController.insertDocIndex2(BigConcurentHashMap.subjectConcurentMap,
+                     * Indexing.indexSubject, Indexing.treeIndexSubject,
+                     * Indexing.invertedIndexSubject);
+                     * //BigConcurentHashMap.subjectConcurentMap.clear(); }
+                     * synchronized (Indexing.invertedIndexBody) {
+                     * IndexController.insertDocIndex2(BigConcurentHashMap.bodyConcurentMap,
+                     * Indexing.indexBody, Indexing.treeIndexBody,
+                     * Indexing.invertedIndexBody);
+                     * //BigConcurentHashMap.bodyConcurentMap.clear(); }
+                     *
+                     * IndexController.printTermMap(Indexing.indexDate,
+                     * Indexing.treeIndexDate, Indexing.termMappingDate);
+                     * IndexController.printTermMap(Indexing.indexFrom,
+                     * Indexing.treeIndexFrom, Indexing.termMappingFrom);
+                     * IndexController.printTermMap(Indexing.indexTo,
+                     * Indexing.treeIndexTo, Indexing.termMappingTo);
+                     * IndexController.printTermMap(Indexing.indexSubject,
+                     * Indexing.treeIndexSubject, Indexing.termMappingSubject);
+                     * IndexController.printTermMap(Indexing.indexBody,
+                     * Indexing.treeIndexBody, Indexing.termMappingBody);
                      */
 
 
