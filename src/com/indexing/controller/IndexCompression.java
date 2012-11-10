@@ -4,9 +4,14 @@
  */
 package com.indexing.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -122,58 +127,110 @@ public class IndexCompression {
 
     }
 
-    public static int[] decode(byte[] encodedValue, boolean useGapList) {
+   
 
-        int dataNum = ((encodedValue[0] & mask8bit) << 24 | (encodedValue[1] & mask8bit) << 16)
-                | ((encodedValue[2] & mask8bit) << 8 | (encodedValue[3] & mask8bit));
+        public static String encodeToString(int[] numbers, boolean useArraySort)
+        {
+            StringBuilder sb = new StringBuilder();
+             byte[] bs = encode(numbers, useArraySort);
+                    for(int i=0;i<bs.length;i++){
+                        String tmp = Integer.toHexString(bs[i]);
 
-        int[] decode = new int[dataNum];
-        int id = 0;
-        int n = 0;
-        for (int i = 4; i < encodedValue.length; i++) {
-
-            if (0 <= encodedValue[i]) {
-                n = (n << 7) + encodedValue[i];
-            } else {
-                n = (n << 7) + (encodedValue[i] + 128);
-                decode[id++] = n;
-                n = 0;
-            }
-
+                        if(tmp.length()<2) 
+                            tmp = "0" + tmp;
+                        else if(tmp.length()>2){
+                            tmp = tmp.substring(tmp.length()-2);
+                        }
+                        sb.append(tmp);   
+                    }
+             return (sb.toString());
         }
+        public static int[] decode ( byte[] encodedValue, boolean useGapList ){
 
-        if (useGapList) {
-            for (int j = 1; j < dataNum; j++) {
-                decode[j] += decode[j - 1];
-            }
+                int dataNum =   ( ( encodedValue[0] & mask8bit ) << 24  | ( encodedValue[1] & mask8bit ) << 16 )
+                                                                                                                                |
+                                                ( ( encodedValue[2] & mask8bit ) <<  8  | ( encodedValue[3] & mask8bit ) );
+
+                int[] decode = new int[dataNum];
+                int id  = 0;
+                int n   = 0;
+                for( int i =4 ; i < encodedValue.length ; i++ ){
+
+                        if( 0 <= encodedValue[i] )
+                                n = ( n << 7 ) + encodedValue[i];
+                        else{
+                                n = ( n << 7 ) + ( encodedValue[i] + 128 );
+                                decode[id++] = n;
+                                n = 0;
+                        }
+
+                }
+
+                if(useGapList)
+                        for( int j =1 ; j < dataNum ; j++ )
+                                decode[j] += decode[j-1];
+
+                return decode;
         }
-
-        return decode;
-
-    }
-
+        
+        public static String decodeFromString(String sb, boolean useGapList)
+        {
+            String hasil="";
+             ArrayList<Byte> abs = new ArrayList<Byte>();
+                    int res[];
+                    byte from[];
+                    for(int i=0;i<sb.length()/2;i++){
+                        String temp = sb.substring((i*2), i*2+2);                                   
+                       abs.add((byte)Integer.parseInt(temp, 16));
+                    }
+                    
+                    from = new byte[abs.size()];
+                    for(int i=0;i<from.length;i++){
+                        from[i] = abs.get(i);
+                    }
+                    
+                    res = decode(from, true);
+                    for(int i=0;i<res.length;i++) 
+                    {
+                        hasil+=res[i] + " " ;
+                    
+                    }
+                    return hasil;
+        }
+    
     public static void main(String[] args) {
-
-        int[] a = {1, 5, 9, 18, 23, 24, 30, 44, 45, 48};
-
-        byte[] test = encode(a, false);
-
-        String as = test.toString();
-        System.out.println(test.toString());
-        System.out.println("");
-        int[] b = decode(as.getBytes(), true);
+        
+         StringBuilder sb = new StringBuilder();
+                   int[] a = new int[]{1,5,9,18,23,24,30,44,45,48};
+                   
+                   String as = encodeToString(a, false);
+                   System.out.println(as);
+                   String asd = decodeFromString("818484898581868e8183", true);
+                   System.out.println(asd);
+        
+//        int [] a = {1,5,9,18,23,24,30,44,45,48};
+//        
+//        byte [] test = encode(a, false);
+//        
+//       String as = new String(test);
+//        System.out.println(as);
+//        System.out.println("");
+//        for (int i = 0; i < test.length; i++) {
+//            //System.out.print(test[i]+"|");
+//            System.out.print(Integer.toHexString(test[i])+"|");
+//        }
+//        String as =test.toString();
+//        System.out.println(test.toString());
+//        System.out.println("");
+//        int [] b = decode(as.getBytes(), true);
+//        for (int i = 0; i < b.length; i++) {
+//            System.out.print(b[i]+"|");
+//        }
+        
+        /*int[] b = gapEncode(a);
+        
         for (int i = 0; i < b.length; i++) {
-            System.out.print(b[i] + "|");
-        }
-
-        /*
-         * int[] b = gapEncode(a);
-         *
-         * for (int i = 0; i < b.length; i++) { System.out.print(b[i]+"|"); }
-         * System.out.println("");
-         *
-         * int c[] = gapDecode(b); for (int i = 0; i < c.length; i++) {
-         * System.out.print(c[i]+"|");
+            System.out.print(b[i]+"|");
         }
          */
 //        ByteBuffer test = ByteBuffer.allocate(100);

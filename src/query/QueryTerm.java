@@ -12,6 +12,9 @@ import java.io.IOException;
  * @author irfannurhakim
  */
 public class QueryTerm {
+    
+    public static boolean isCompress = true;
+    public static String com= isCompress? "com_":"";
 
     /**
      * @param args the command line arguments

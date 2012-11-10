@@ -4,12 +4,14 @@
  */
 package com.query.controller;
 
+import com.indexing.controller.IndexCompression2;
 import indexing.Indexing;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import query.QueryTerm;
 
 /**
  *
@@ -17,9 +19,9 @@ import java.util.ArrayList;
  */
 public class QueryProcessor {
 
-    private static final String PREFIX_INDEX_FILENAME = "inverted_index_";
-    private static final String PREFIX_TERM_MAPPING_FILENAME = "term_mapping_";
-    private static final String DOC_MAPPING = "document_mapping.txt";
+    private static final String PREFIX_INDEX_FILENAME = QueryTerm.com + "inverted_index_";
+    private static final String PREFIX_TERM_MAPPING_FILENAME = QueryTerm.com + "term_mapping_";
+    private static final String DOC_MAPPING = QueryTerm.com + "document_mapping.txt";
 
     public static void doQuery(String field, String term, String path) throws IOException {
 
@@ -34,6 +36,24 @@ public class QueryProcessor {
             file.read(buffer);
             String str = new String(buffer);
             String content = str.split("=")[1];
+            if (QueryTerm.isCompress) {
+                String tests[] = content.split(";");
+                String posID[] = tests[1].split(":");
+                ArrayList<Integer> docID = IndexCompression2.StringToVByte(tests[0]);
+                String temp = "";
+                for (int i = 0; i < docID.size(); i++) {
+                    temp += docID.get(i) + ":";
+                    ArrayList<Integer> posIDs = IndexCompression2.StringToVByte(posID[i]);
+                    String temp2 = "";
+                    for (int j = 0; j < posIDs.size(); j++) {
+                        temp2 += posIDs.get(j) + ",";
+                    }
+                    temp2 = temp2.substring(0, temp2.length() - 1);
+                    temp += temp2 + ";";
+
+                }
+                content = temp;
+            }
             String[] msgs = content.split(";");
 
             String toWrite = term + " FIELD=" + field + " DF=" + msgs.length + "\r\n";

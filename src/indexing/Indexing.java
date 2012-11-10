@@ -53,13 +53,15 @@ public class Indexing {
     public static List<String> test = new ArrayList<>();
     public static Integer counterCall=0;
     public static int jumFile=0;
+    public static boolean isCompress = true;
+    public static String com= isCompress? "com_":"";
     
-    public static String [] fileNames ={"document_mapping.txt", 
-        "inverted_index_date.txt","term_mapping_date.txt",
-        "inverted_index_from.txt", "term_mapping_from.txt", 
-        "inverted_index_to.txt", "term_mapping_to.txt",
-        "inverted_index_subject.txt", "term_mapping_subject.txt", 
-        "inverted_index_body.txt", "term_mapping_body.txt"};
+    public static String [] fileNames ={com+"document_mapping.txt", 
+        com+"inverted_index_date.txt",com+"term_mapping_date.txt",
+        com+"inverted_index_from.txt", com+"term_mapping_from.txt", 
+        com+"inverted_index_to.txt", com+"term_mapping_to.txt",
+        com+"inverted_index_subject.txt", com+"term_mapping_subject.txt", 
+        com+"inverted_index_body.txt", com+"term_mapping_body.txt"};
     /**
      * author irfannurhakim
      *
@@ -77,8 +79,8 @@ public class Indexing {
          */
 
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        //String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\";
+        //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
+        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\allen-p";
 
         top_k_token = 100;
         File f1;
@@ -92,17 +94,17 @@ public class Indexing {
             }
             
         }
-        docMapping = new RandomAccessFile("document_mapping.txt", "rw");
-        invertedIndexDate = new RandomAccessFile("inverted_index_date.txt", "rw");
-        termMappingDate = new RandomAccessFile("term_mapping_date.txt", "rw");
-        invertedIndexFrom = new RandomAccessFile("inverted_index_from.txt", "rw");
-        termMappingFrom = new RandomAccessFile("term_mapping_from.txt", "rw");
-        invertedIndexTo = new RandomAccessFile("inverted_index_to.txt", "rw");
-        termMappingTo = new RandomAccessFile("term_mapping_to.txt", "rw");
-        invertedIndexSubject = new RandomAccessFile("inverted_index_subject.txt", "rw");
-        termMappingSubject = new RandomAccessFile("term_mapping_subject.txt", "rw");
-        invertedIndexBody = new RandomAccessFile("inverted_index_body.txt", "rw");
-        termMappingBody = new RandomAccessFile("term_mapping_body.txt", "rw");
+        docMapping = new RandomAccessFile(fileNames[0], "rw");
+        invertedIndexDate = new RandomAccessFile(fileNames[1], "rw");
+        termMappingDate = new RandomAccessFile(fileNames[2], "rw");
+        invertedIndexFrom = new RandomAccessFile(fileNames[3], "rw");
+        termMappingFrom = new RandomAccessFile(fileNames[4], "rw");
+        invertedIndexTo = new RandomAccessFile(fileNames[5], "rw");
+        termMappingTo = new RandomAccessFile(fileNames[6], "rw");
+        invertedIndexSubject = new RandomAccessFile(fileNames[7], "rw");
+        termMappingSubject = new RandomAccessFile(fileNames[8], "rw");
+        invertedIndexBody = new RandomAccessFile(fileNames[9], "rw");
+        termMappingBody = new RandomAccessFile(fileNames[10], "rw");
         FileVisitor<Path> fileVisitor = new FileWalker();
         Files.walkFileTree(Paths.get(root), fileVisitor);
         
