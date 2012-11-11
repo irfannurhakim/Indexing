@@ -4,6 +4,7 @@
  */
 package com.indexing.model;
 
+import com.indexing.controller.IndexCompression2;
 import indexing.Indexing;
 import java.io.*;
 import java.util.*;
@@ -44,6 +45,24 @@ public class BigConcurentHashMap {
                     Map.Entry me = (Map.Entry) i.next();
                     String newKey = (String) me.getKey();
                     String newval = (String) me.getValue();
+                    
+                    if(Indexing.isCompress)
+                    {
+                        newval=newval.substring(0, newval.length()-1);
+                        String posID[] = newval.split(",");
+                        int posIDint[] = new int[posID.length];
+                        for (int j=0; j<posID.length;j++) {
+                            posIDint[j]= Integer.parseInt(posID[j]);
+                        }
+                        //posIDint = IndexCompression2.gapDecode(posIDint);
+                        LinkedList<Integer> test = new LinkedList<Integer>();
+                        for(int j=0; j<posIDint.length;j++)
+                        {
+                            test.add(posIDint[j]);
+                        }
+                        newval = IndexCompression2.VByteToString(test);
+                        
+                    }
 
                     Long idMapTerm = new Long(0);
                     String maping = tree.get(newKey);
@@ -76,11 +95,27 @@ public class BigConcurentHashMap {
                     idMapTerm = Long.parseLong(maping);
                     String freq = (String) a.get(idMapTerm);
                     if (freq == null) {
-                        freq = docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                        if(Indexing.isCompress)
+                        {
+                            freq = docNumber + ":" + newval + ";";
+                        }
+                        else
+                        {
+                            freq = docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                        }
+                        
 
                     } else {
+                        if(Indexing.isCompress)
+                        {
+                            freq = freq + "" + docNumber + ":" + newval + ";";
+                        }
+                        else
+                        {
+                             freq = freq + "" + docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                        }
                         //System.out.println(newKey+" = "+(freq.getTotalDocument()+1));
-                        freq = freq + "" + docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                       
                         //System.out.println(freq);
 
                     }
@@ -152,6 +187,8 @@ public class BigConcurentHashMap {
             }
         }
 
+        long position =0;
+        StringBuffer kumpul =new StringBuffer();
         for (long i = 1; i < tree.size() + 1; i++) {
 
             String tempString = "";
@@ -169,21 +206,61 @@ public class BigConcurentHashMap {
 
                 }
             }
+            if(Indexing.isCompress)
+            {
+                String temps[] = tempString.split(";");
+                String posID[] = new String[temps.length];
+                String docID[] = new String[temps.length];
+                String docIDs="";
+                String posIDs="";
+                for (int j = 0; j < temps.length; j++) {
+                    String string[] = temps[j].split(":", 2);
+                    docID[j]=string[0];
+                    posID[j]=string[1];
+                    posIDs+=posID[j]+":";
+                }
+                posIDs= posIDs.substring(0, posIDs.length()-1);
+                int docIDint[] = new int[docID.length];
+                        for (int j=0; j<docID.length;j++) {
+                            docIDint[j]= Integer.parseInt(docID[j]);
+                        }
+                        //docIDint = IndexCompression2.gapDecode(docIDint);
+                        LinkedList<Integer> test = new LinkedList<Integer>();
+                        for(int j=0; j<docIDint.length;j++)
+                        {
+                            test.add(docIDint[j]);
+                        }
+                        docIDs = IndexCompression2.VByteToString(test);
+                tempString = docIDs+";"+posIDs;
+            }
             try {
                 String key = getKeyfromValue(tree, i + "");
-                long position = index.length();
 
-
-                index.seek(index.length());
+                if(kumpul.length()> 1000000)
+                {
+                    index.seek(index.length());
+                    index.write(kumpul.toString().getBytes());
+                    kumpul=new StringBuffer();
+                }
+                
                 String toWrite = i + "=" + tempString + Indexing.NEWLINE;
-                index.write(toWrite.getBytes());
                 long length = toWrite.getBytes().length;
                 tree.put(key, i + "|" + position + "|" + length);
+                position+=length;
+                kumpul.append(toWrite);
             } catch (IOException ex) {
                 Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
+        try {
+            index.seek(index.length());
+            index.write(kumpul.toString().getBytes());
+            kumpul=new StringBuffer();
+        } catch (IOException ex) {
+            Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
 
         Iterator<Map.Entry<String, String>> itr = tree.entrySet().iterator();
         while (itr.hasNext()) {
