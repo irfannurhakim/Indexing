@@ -10,6 +10,10 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.*;
 
 /**
  *
@@ -21,7 +25,7 @@ public class QueryProcessor {
     private static final String PREFIX_TERM_MAPPING_FILENAME = "term_mapping_";
     private static final String DOC_MAPPING = "document_mapping.txt";
 
-    public static void doQuery(String field, String term, String path) throws IOException {
+    public static void doQuery(String field, String term, final String path) throws IOException {
 
         String indexFileName = path + PREFIX_INDEX_FILENAME + field + ".txt";
 
@@ -35,11 +39,36 @@ public class QueryProcessor {
             String str = new String(buffer);
             String content = str.split("=")[1];
             String[] msgs = content.split(";");
-
+            System.out.println(str);
             String toWrite = term + " FIELD=" + field + " DF=" + msgs.length + "\r\n";
-            for (String string : msgs) {
-                toWrite += "MSG ID=" + messageIdTranslation(string.split(":")[0], path) + " TF=" + string.split(":")[1].split(",").length + " " + string.split(":")[1] + "\r\n";
+
+            List<Future<String>> list = new ArrayList<>();
+            ExecutorService executor = Executors.newFixedThreadPool(8);
+            for (final String string : msgs) {
+                Callable<String> worker = new Callable<String>() {
+
+                    @Override
+                    public String call() throws Exception {
+                        return "MSG ID=" + messageIdTranslation(string.split(":")[0], path) + " TF=" + string.split(":")[1].split(",").length + " " + string.split(":")[1] + "\r\n";
+                    }
+                };
+                Future<String> submit = executor.submit(worker);
+                list.add(submit);
             }
+
+            executor.shutdown();
+            // Wait until all threads are finish
+            while (!executor.isTerminated()) {
+            }
+
+            for (Future<String> future : list) {
+                try {
+                    toWrite += future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
             writeFile(toWrite, field, term);
         } else {
             System.out.println("Term '" + term + "' Not Found in Field " + field);

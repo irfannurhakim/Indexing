@@ -25,7 +25,7 @@ public class FileWalker extends SimpleFileVisitor<Path> {
 
     private static long startTime;
     private int nrOfProcessors = Runtime.getRuntime().availableProcessors();
-    private ExecutorService es = Executors.newFixedThreadPool(nrOfProcessors);
+    private ExecutorService es = Executors.newFixedThreadPool(8);
     private Runtime rt = Runtime.getRuntime();
     private int i = 0;
 
