@@ -21,11 +21,11 @@ public class QueryProcessor {
 
     private static final String PREFIX_INDEX_FILENAME = QueryTerm.com + "inverted_index_";
     private static final String PREFIX_TERM_MAPPING_FILENAME = QueryTerm.com + "term_mapping_";
-    private static final String DOC_MAPPING = QueryTerm.com + "document_mapping.txt";
+    private static final String DOC_MAPPING = "document_mapping.txt";
 
     public static void doQuery(String field, String term, String path) throws IOException {
 
-        String indexFileName = path + PREFIX_INDEX_FILENAME + field + ".txt";
+        String indexFileName =path + PREFIX_INDEX_FILENAME + field + ".txt";
 
         RandomAccessFile file = new RandomAccessFile(indexFileName, "r");
         ArrayList<Object> position = getPositionTerm(field, term, path);
@@ -125,7 +125,7 @@ public class QueryProcessor {
     }
 
     private static void writeFile(String textToWrite, String field, String term) throws IOException {
-        try (FileChannel rwChannel = new RandomAccessFile(Indexing.codeName + "-" + field + "-" + term + ".txt", "rw").getChannel()) {
+        try (FileChannel rwChannel = new RandomAccessFile(QueryTerm.com+Indexing.codeName + "-" + field + "-" + term + ".txt", "rw").getChannel()) {
             ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, textToWrite.length());
             wrBuf.put(textToWrite.getBytes());
         }

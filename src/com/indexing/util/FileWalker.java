@@ -8,11 +8,13 @@ package com.indexing.util;
 import com.indexing.model.BigConcurentHashMap;
 import indexing.Indexing;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -157,7 +159,12 @@ public class FileWalker extends SimpleFileVisitor<Path> {
                         BigConcurentHashMap.printPartIndex(BigConcurentHashMap.bodyConcurentMap, "tempBody" + Indexing.jumFile + ".txt");
                         rt.gc();
                     }
-
+                    
+//                    new processing(Indexing.treeIndexDate, "tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate).start();
+//                    new processing (Indexing.treeIndexFrom, "tempFrom", Indexing.invertedIndexFrom, Indexing.termMappingFrom).start();
+//                    new processing(Indexing.treeIndexTo, "tempTo", Indexing.invertedIndexTo, Indexing.termMappingTo).start();
+//                    new processing(Indexing.treeIndexSubject, "tempSubject", Indexing.invertedIndexSubject, Indexing.termMappingSubject).start();
+//                    new processing(Indexing.treeIndexBody, "tempBody", Indexing.invertedIndexBody, Indexing.termMappingBody).start();
                     BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexDate, "tempDate", Indexing.invertedIndexDate, Indexing.termMappingDate);
                     BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexFrom, "tempFrom", Indexing.invertedIndexFrom, Indexing.termMappingFrom);
                     BigConcurentHashMap.mergeInvertedIndex(Indexing.treeIndexTo, "tempTo", Indexing.invertedIndexTo, Indexing.termMappingTo);
@@ -239,5 +246,26 @@ public class FileWalker extends SimpleFileVisitor<Path> {
             }
         }
 
+    }
+    class processing extends Thread
+    {
+        TreeMap<String, String> tree;
+        String filepart;
+        RandomAccessFile index;
+        RandomAccessFile indexMapping;
+
+        public processing(TreeMap<String, String> tree, String filepart, RandomAccessFile index, RandomAccessFile indexMapping) {
+            this.tree = tree;
+            this.filepart = filepart;
+            this.index = index;
+            this.indexMapping = indexMapping;
+        }
+        
+        @Override
+        public void run()
+        {
+             BigConcurentHashMap.mergeInvertedIndex(tree, filepart, index , indexMapping);
+        }
+      
     }
 }

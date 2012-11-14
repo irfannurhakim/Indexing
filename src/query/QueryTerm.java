@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class QueryTerm {
     
-    public static boolean isCompress = true;
+    public static boolean isCompress = false;
     public static String com= isCompress? "com_":"";
 
     /**

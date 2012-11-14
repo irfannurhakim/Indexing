@@ -190,7 +190,7 @@ public class IndexCompression2 {
         //256=848101b2049d019a;01c8|14d2|02f18c|07b0|07b0
          //77=5:181;142:1046;158:1046;159:1046;
         //77=85019202af03ce;01b5|0896|0896|0896
-        String test = "848101b2049d019a;01c8:14d2:02f18c:07b0:07b0";
+        String test = "e403ff84e1c3a502ac01908601e0c586b2f6b302b1018885019a;01f9:01a0:c4:a2:c002bc:01f5:a2:c4:01a0:96:e601d9018d02b1:c401a0ec01dd018d02b1:a6:a3:bc:a2:c4:01a0:a3";
         String tests[] =test.split(";");
         String posID[]= tests[1].split(":");
         ArrayList<Integer> docID = StringToVByte(tests[0]);
