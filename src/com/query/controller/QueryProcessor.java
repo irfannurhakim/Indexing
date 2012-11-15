@@ -6,11 +6,18 @@ package com.query.controller;
 
 import com.indexing.controller.IndexCompression2;
 import indexing.Indexing;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.*;
 import query.QueryTerm;
@@ -189,5 +196,16 @@ public class QueryProcessor {
         } else {
             return "null";
         }
+    }
+
+    private static String messageIdTranstalion2(String path) throws IOException {
+        String termMappingFileName = path + DOC_MAPPING;
+
+        HashMap<String, String> xx = new HashMap<>();
+
+
+       
+        
+        return null;
     }
 }

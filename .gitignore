@@ -1,5 +1,5 @@
 *.mf
-build.xml
+*.xml
 build/
 *.txt
 *.class
