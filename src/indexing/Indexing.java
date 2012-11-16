@@ -53,15 +53,15 @@ public class Indexing {
     public static List<String> test = new ArrayList<>();
     public static Integer counterCall=0;
     public static int jumFile=0;
-    public static boolean isCompress = true;
-    public static String com= isCompress? "com_":"";
+    //public static boolean isCompress = false;
+    //public static String com= isCompress? "com_":"";
     
-    public static String [] fileNames ={com+"document_mapping.txt", 
-        com+"inverted_index_date.txt",com+"term_mapping_date.txt",
-        com+"inverted_index_from.txt", com+"term_mapping_from.txt", 
-        com+"inverted_index_to.txt", com+"term_mapping_to.txt",
-        com+"inverted_index_subject.txt", com+"term_mapping_subject.txt", 
-        com+"inverted_index_body.txt", com+"term_mapping_body.txt"};
+    public static String [] fileNames ={"document_mapping.txt", 
+        "inverted_index_date.txt","term_mapping_date.txt",
+        "inverted_index_from.txt", "term_mapping_from.txt", 
+        "inverted_index_to.txt", "term_mapping_to.txt",
+        "inverted_index_subject.txt", "term_mapping_subject.txt", 
+        "inverted_index_body.txt", "term_mapping_body.txt"};
     /**
      * author irfannurhakim
      *
@@ -79,8 +79,8 @@ public class Indexing {
          */
 
         //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
-        String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/dasovich-j";
-        //String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\";
+        //String root = "/Users/hadipratama/Documents/Kuliah/Search_Engine_Tech/enron_mail_20110402/maildir/beck-s";
+        String root = "D:\\Kuliah_S2\\IF6054_Teknologi_Mesin_Pencari\\Tugas\\enron_mail_20110402\\enron_mail_20110402\\maildir\\";
 
         top_k_token = 100;
         File f1;
