@@ -5,7 +5,9 @@
 package indexing;
 
 import com.indexing.util.FileWalker;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.FileVisitor;
@@ -27,17 +29,17 @@ public class Indexing {
     public static int top_k_token;
     public static final String codeName = "irfan_elisafina_pandapotan";
     public static long docID = -1;
-    public static RandomAccessFile docMapping = null;
-    public static RandomAccessFile invertedIndexDate = null;
-    public static RandomAccessFile termMappingDate = null;
-    public static RandomAccessFile invertedIndexFrom = null;
-    public static RandomAccessFile termMappingFrom = null;
-    public static RandomAccessFile invertedIndexTo = null;
-    public static RandomAccessFile termMappingTo = null;
-    public static RandomAccessFile invertedIndexSubject = null;
-    public static RandomAccessFile termMappingSubject = null;
-    public static RandomAccessFile invertedIndexBody = null;
-    public static RandomAccessFile termMappingBody = null;
+    public static BufferedWriter docMapping = null;
+    public static BufferedWriter invertedIndexDate = null;
+    public static BufferedWriter termMappingDate = null;
+    public static BufferedWriter invertedIndexFrom = null;
+    public static BufferedWriter termMappingFrom = null;
+    public static BufferedWriter invertedIndexTo = null;
+    public static BufferedWriter termMappingTo = null;
+    public static BufferedWriter invertedIndexSubject = null;
+    public static BufferedWriter termMappingSubject = null;
+    public static BufferedWriter invertedIndexBody = null;
+    public static BufferedWriter termMappingBody = null;
     public final static String NEWLINE="\r\n";
     public static LinkedHashMap<String,Long> indexDate = new LinkedHashMap<>();
     public static TreeMap<String,String> treeIndexDate = new TreeMap<>();
@@ -94,17 +96,17 @@ public class Indexing {
             }
             
         }
-        docMapping = new RandomAccessFile(fileNames[0], "rw");
-        invertedIndexDate = new RandomAccessFile(fileNames[1], "rw");
-        termMappingDate = new RandomAccessFile(fileNames[2], "rw");
-        invertedIndexFrom = new RandomAccessFile(fileNames[3], "rw");
-        termMappingFrom = new RandomAccessFile(fileNames[4], "rw");
-        invertedIndexTo = new RandomAccessFile(fileNames[5], "rw");
-        termMappingTo = new RandomAccessFile(fileNames[6], "rw");
-        invertedIndexSubject = new RandomAccessFile(fileNames[7], "rw");
-        termMappingSubject = new RandomAccessFile(fileNames[8], "rw");
-        invertedIndexBody = new RandomAccessFile(fileNames[9], "rw");
-        termMappingBody = new RandomAccessFile(fileNames[10], "rw");
+        docMapping =  new BufferedWriter(new FileWriter(fileNames[0]));
+        invertedIndexDate = new BufferedWriter(new FileWriter(fileNames[1]));
+        termMappingDate = new BufferedWriter(new FileWriter(fileNames[2]));
+        invertedIndexFrom = new BufferedWriter(new FileWriter(fileNames[3]));
+        termMappingFrom = new BufferedWriter(new FileWriter(fileNames[4]));
+        invertedIndexTo = new BufferedWriter(new FileWriter(fileNames[5]));
+        termMappingTo = new BufferedWriter(new FileWriter(fileNames[6]));
+        invertedIndexSubject = new BufferedWriter(new FileWriter(fileNames[7]));
+        termMappingSubject = new BufferedWriter(new FileWriter(fileNames[8]));
+        invertedIndexBody = new BufferedWriter(new FileWriter(fileNames[9]));
+        termMappingBody = new BufferedWriter(new FileWriter(fileNames[10]));
         FileVisitor<Path> fileVisitor = new FileWalker();
         Files.walkFileTree(Paths.get(root), fileVisitor);
         

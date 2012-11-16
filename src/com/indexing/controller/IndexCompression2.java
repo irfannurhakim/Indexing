@@ -18,13 +18,14 @@ public class IndexCompression2 {
     
     public static LinkedList<Integer> gapEncode(LinkedList<Integer> input) {
          Collections.sort(input);
+         ArrayList<Integer> inputs = new ArrayList<>(input);
         LinkedList<Integer> hasil = new LinkedList<Integer>();
-        for (int i = 0; i < input.size(); i++) {
+        for (int i = 0; i < inputs.size(); i++) {
             if (i != 0) {
-                hasil.add(input.get(i)-input.get(i-1)) ;
+                hasil.add(inputs.get(i)-inputs.get(i-1)) ;
                         //hasil[i]= input[i] - input[i - 1];
             } else {
-                hasil.add(input.get(i));
+                hasil.add(inputs.get(i));
                 //hasil[i] = input[i];
             }
         }
@@ -150,22 +151,22 @@ public class IndexCompression2 {
     
     public static String VByteToString(LinkedList<Integer> test)
     {
-        String hasil="";
+        StringBuilder hasil= new StringBuilder();
         ArrayList<Byte> code = vbEncode(test);
         //System.out.println(code);
         for(int i = 0 ; i < code.size() ; i++){
             String as=Integer.toHexString(code.get(i).toInt());
             if(as.length()<2)
             {
-                hasil+="0" +as+ "";
+                hasil.append("0").append(as);
                 //System.out.println(as);
             }
             else
             {
-                hasil+=as+ "";
+                hasil.append(as);
             }
 	}
-        return  hasil;
+        return  hasil.toString();
     }
     
     public static ArrayList<Integer> StringToVByte (String sb)

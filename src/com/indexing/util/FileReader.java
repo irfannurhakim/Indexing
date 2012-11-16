@@ -87,10 +87,10 @@ public class FileReader implements Callable {
                 long docNumber = 0;
                 synchronized (Indexing.docMapping) {
                     Indexing.docID++;
-                    Indexing.docMapping.seek(Indexing.docMapping.length());
+                    //Indexing.docMapping.seek(Indexing.docMapping.length());
                     //System.out.println(path.toString());
                     String temp = Indexing.docID + "=" + idEmail + "\r\n";
-                    Indexing.docMapping.write(temp.getBytes());
+                    Indexing.docMapping.write(temp);
                     docNumber = Indexing.docID;
                     //Tokenizer.docMapping.close();
                     //System.out.println("aaaaa");

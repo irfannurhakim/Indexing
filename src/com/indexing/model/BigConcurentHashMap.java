@@ -93,15 +93,18 @@ public class BigConcurentHashMap {
                      */
 
                     idMapTerm = Long.parseLong(maping);
-                    String freq = (String) a.get(idMapTerm);
-                    if (freq == null) {
+                    String temp=(String) a.get(idMapTerm);
+                    StringBuilder freq = new StringBuilder();
+                    if ( temp== null) {
 //                        if(Indexing.isCompress)
 //                        {
 //                            freq = docNumber + ":" + newval + ";";
 //                        }
 //                        else
 //                        {
-                            freq = docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                            
+                            freq.append(docNumber).append(":").append(newval.substring(0, newval.length() - 1)).append(";");
+                           // freq = docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
 //                        }
                         
 
@@ -112,14 +115,16 @@ public class BigConcurentHashMap {
 //                        }
 //                        else
 //                        {
-                             freq = freq + "" + docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
+                            freq=new StringBuilder(temp);
+                            freq.append(docNumber).append(":").append(newval.substring(0, newval.length() - 1)).append(";");
+                             //freq = freq + "" + docNumber + ":" + newval.substring(0, newval.length() - 1) + ";";
 //                        }
                         //System.out.println(newKey+" = "+(freq.getTotalDocument()+1));
                        
                         //System.out.println(freq);
 
                     }
-                    a.put(idMapTerm, freq);
+                    a.put(idMapTerm, freq.toString());
                 }
 
             }
@@ -130,19 +135,21 @@ public class BigConcurentHashMap {
     }
 
     public static void printPartIndex(ConcurrentSkipListMap<Long, String> a, String fileName) {
-        FileWriter fStream = null;
+       // FileWriter fStream = null;
+        BufferedWriter fStream = null;
         try {
-            fStream = new FileWriter(fileName, true);
+           // fStream = new FileWriter(fileName, true);
+            fStream = new BufferedWriter(new FileWriter(fileName));
             Set set = a.entrySet();
             Iterator i = set.iterator();
             while (i.hasNext()) {
                 Map.Entry me = (Map.Entry) i.next();
                 Long newKey = (Long) me.getKey();
                 String newval = (String) me.getValue();
-                fStream.append(newKey + "=" + newval + Indexing.NEWLINE);
+                fStream.write(newKey + "=" + newval + Indexing.NEWLINE);
 
             }
-            fStream.flush();
+            //fStream.flush();
             fStream.close();
             a.clear();
         } catch (IOException ex) {
@@ -150,27 +157,34 @@ public class BigConcurentHashMap {
         }
     }
 
-    public static String getKeyfromValue(TreeMap<String, String> tree, String value) {
-        String result = "";
-        Iterator<Map.Entry<String, String>> iter = tree.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String, String> entry = iter.next();
-            if (entry.getValue().equals(value)) {
-                result = entry.getKey();
-                break;
-            }
-        }
-        return result;
-    }
+    public static TreeMap<String, String>  reverseTree(TreeMap<String, String> map) {
+    TreeMap<String, String> rev = new TreeMap<String, String>();
+    for(Map.Entry<String, String> entry : map.entrySet())
+        rev.put(entry.getValue(), entry.getKey());
+    return rev;
+}  
+//    public static String getKeyfromValue(TreeMap<String, String> tree, String value) {
+//        String result = "";
+//        Iterator<Map.Entry<String, String>> iter = tree.entrySet().iterator();
+//        while (iter.hasNext()) {
+//            Map.Entry<String, String> entry = iter.next();
+//            if (entry.getValue().equals(value)) {
+//                result = entry.getKey();
+//                break;
+//            }
+//        }
+//        return result;
+//    }
 
-    public static void mergeInvertedIndex(TreeMap<String, String> tree, String filepart, RandomAccessFile index, RandomAccessFile indexMapping) {
+    public static void mergeInvertedIndex(TreeMap<String, String> tree, String filepart, BufferedWriter index, BufferedWriter indexMapping) {
         String fileparts[] = new String[Indexing.jumFile];
-        RandomAccessFile raf[] = new RandomAccessFile[Indexing.jumFile];
-
+        BufferedReader raf[] = new BufferedReader[Indexing.jumFile];
+        
+        TreeMap<String, String> reverseTree =reverseTree(tree);
         for (int i = 0; i < Indexing.jumFile; i++) {
-            fileparts[i] = filepart + (i + 1) + ".txt";
+            fileparts[i] = filepart +""+ (i + 1) + ".txt";
             try {
-                raf[i] = new RandomAccessFile(fileparts[i], "r");
+                raf[i] = new BufferedReader(new FileReader(fileparts[i]));
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             }
@@ -188,24 +202,34 @@ public class BigConcurentHashMap {
         }
 
         long position =0;
-        StringBuffer kumpul =new StringBuffer();
+       // StringBuffer kumpul =new StringBuffer();
         for (long i = 1; i < tree.size() + 1; i++) {
             //System.out.println(filepart+"-"+i);
-            String tempString = "";
+            StringBuilder tempString = new StringBuilder();
+            int jumlahSama=0;
             for (int j = 0; j < Indexing.jumFile; j++) {
+                //System.out.println("j="+j+"; i="+i+"; temp ="+temp[j]);
                 if (tempInt[j] == i) {
-                    tempString += temp[j].split("=")[1];
+                    jumlahSama++;
+                    tempString.append(temp[j].split("=")[1]);
+                    //tempString += temp[j].split("=")[1];
                     try {
                         temp[j] = raf[j].readLine();
                         //System.out.println("file ke - "+j+ " --- "+temp[j]);
                         tempInt[j] = Long.parseLong(temp[j].split("=")[0]);
                     } catch (Exception ex) {
                         System.out.println("File ke " + j + "habis sampai " + i);
-                        //Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+                        try {
+                            raf[j].close();
+                            //Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex1) {
+                            Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
                     }
 
                 }
             }
+            //System.out.println("i="+i+" jumsama="+jumlahSama);
 //            if(Indexing.isCompress)
 //            {
 //                String temps[] = tempString.split(";");
@@ -234,50 +258,67 @@ public class BigConcurentHashMap {
 //                tempString = docIDs+";"+posIDs;
 //            }
             try {
-                String key = getKeyfromValue(tree, i + "");
+                //String key = getKeyfromValue(tree, i + "");
+                String key = reverseTree.get(i + "");
                 if(i%10000==0)
                 {
                     System.out.println(filepart+"-"+i);
                 }
-                if(kumpul.length()> 1000000)
-                {
-                    System.out.println(filepart+"-"+i);
-                    index.seek(index.length());
-                    index.write(kumpul.toString().getBytes());
-                    kumpul=new StringBuffer();
-                }
+//                if(kumpul.length()> 1000000)
+//                {
+//                    System.out.println(filepart+"-"+i);
+//                    index.seek(index.length());
+//                    index.write(kumpul.toString().getBytes());
+//                    kumpul=new StringBuffer();
+//                }
                 
                 String toWrite = i + "=" + tempString + Indexing.NEWLINE;
                 long length = toWrite.getBytes().length;
                 tree.put(key, i + "|" + position + "|" + length);
                 position+=length;
-                kumpul.append(toWrite);
+                index.write(toWrite);
+                if(tempString.length()<2)
+                {
+                    System.out.println(filepart+" | "+key+" | "+i);
+                    //System.exit(1);
+                    
+                }
+                
+                //kumpul.append(toWrite);
             } catch (IOException ex) {
                 Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
+//        try {
+//            index.seek(index.length());
+//            index.write(kumpul.toString().getBytes());
+//            kumpul=new StringBuffer();
+//        } catch (IOException ex) {
+//            Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         try {
-            index.seek(index.length());
-            index.write(kumpul.toString().getBytes());
-            kumpul=new StringBuffer();
+            index.close();
         } catch (IOException ex) {
             Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-
         Iterator<Map.Entry<String, String>> itr = tree.entrySet().iterator();
         while (itr.hasNext()) {
             try {
                 Map.Entry<String, String> entry = itr.next();
                 String term = entry.getKey();
                 String indexTerm = entry.getValue();
-                indexMapping.seek(indexMapping.length());
+                //indexMapping.seek(indexMapping.length());
                 String toWrite = term + "=" + indexTerm + Indexing.NEWLINE;
-                indexMapping.write(toWrite.getBytes());
+                indexMapping.write(toWrite);
             } catch (IOException ex) {
-                Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
+        }
+        try {
+            indexMapping.close();
+        } catch (IOException ex) {
+            Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
         }
         tree.clear();
         File f1;
