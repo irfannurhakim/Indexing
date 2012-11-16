@@ -18,6 +18,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -142,11 +144,12 @@ public class FileWalker extends SimpleFileVisitor<Path> {
             if (Indexing.counterCall >= i) {
                 es.shutdown();
                 es.awaitTermination((long) 100, TimeUnit.MILLISECONDS);
-
-
-                /**
-                 * Calculate all document statistics and print to file
-                 */
+                try {
+                    
+                    Indexing.docMapping.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(FileWalker.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 Indexing.N_messagge = i;
                 try {
                     if (Indexing.counterCall % 10000 != 0) {
@@ -247,25 +250,5 @@ public class FileWalker extends SimpleFileVisitor<Path> {
         }
 
     }
-    class processing extends Thread
-    {
-        TreeMap<String, String> tree;
-        String filepart;
-        RandomAccessFile index;
-        RandomAccessFile indexMapping;
-
-        public processing(TreeMap<String, String> tree, String filepart, RandomAccessFile index, RandomAccessFile indexMapping) {
-            this.tree = tree;
-            this.filepart = filepart;
-            this.index = index;
-            this.indexMapping = indexMapping;
-        }
-        
-        @Override
-        public void run()
-        {
-             BigConcurentHashMap.mergeInvertedIndex(tree, filepart, index , indexMapping);
-        }
-      
-    }
+    
 }
