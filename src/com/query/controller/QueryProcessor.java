@@ -6,16 +6,9 @@ package com.query.controller;
 
 import com.indexing.controller.IndexCompression2;
 import indexing.Indexing;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +24,20 @@ public class QueryProcessor {
     private static final String PREFIX_INDEX_FILENAME = QueryTerm.com + "inverted_index_";
     private static final String PREFIX_TERM_MAPPING_FILENAME = QueryTerm.com + "term_mapping_";
     private static final String DOC_MAPPING = "document_mapping.txt";
-
+    private static HashMap<String, String> tempDocMapping = new HashMap<>();
+    
+    
+    /**
+     * Fungsi utama untuk melakukan pencarian
+     * @param field
+     * @param term
+     * @param path
+     * @throws IOException 
+     */
     public static void doQuery(String field, String term, final String path) throws IOException {
 
-        String indexFileName =path + PREFIX_INDEX_FILENAME + field + ".txt";
+        String indexFileName = path + PREFIX_INDEX_FILENAME + field + ".txt";
+        dumpDocMapping(path);
 
         RandomAccessFile file = new RandomAccessFile(indexFileName, "r");
         ArrayList<Object> position = getPositionTerm(field, term, path);
@@ -66,15 +69,18 @@ public class QueryProcessor {
             String[] msgs = content.split(";");
             System.out.println(str);
             String toWrite = term + " FIELD=" + field + " DF=" + msgs.length + "\r\n";
-
+            System.out.println(toWrite);
             List<Future<String>> list = new ArrayList<>();
-            ExecutorService executor = Executors.newFixedThreadPool(8);
+            ExecutorService executor = Executors.newFixedThreadPool(100);
+            
+            
             for (final String string : msgs) {
                 Callable<String> worker = new Callable<String>() {
 
                     @Override
                     public String call() throws Exception {
-                        return "MSG ID=" + messageIdTranslation(string.split(":")[0], path) + " TF=" + string.split(":")[1].split(",").length + " " + string.split(":")[1] + "\r\n";
+                        String[] a = string.split(":");
+                        return "MSG ID=" + tempDocMapping.get(a[0]) + " TF=" + a[1].split(",").length + " " + a[1] + "\r\n";
                     }
                 };
                 Future<String> submit = executor.submit(worker);
@@ -100,6 +106,15 @@ public class QueryProcessor {
         }
     }
 
+    
+    /**
+     * Binary search untuk mencari lokasi dimana term yang dicari pada file index
+     * @param field
+     * @param term
+     * @param path
+     * @return
+     * @throws IOException 
+     */
     private static ArrayList<Object> getPositionTerm(String field, String term, String path) throws IOException {
         String termMappingFileName = path + PREFIX_TERM_MAPPING_FILENAME + field + ".txt";
 
@@ -158,54 +173,46 @@ public class QueryProcessor {
         return ret;
     }
 
+    /**
+     * Fungsi untuk menulis hasil pencarian ke File
+     * @param textToWrite
+     * @param field
+     * @param term
+     * @throws IOException 
+     */
     private static void writeFile(String textToWrite, String field, String term) throws IOException {
-        try (FileChannel rwChannel = new RandomAccessFile(QueryTerm.com+Indexing.codeName + "-" + field + "-" + term + ".txt", "rw").getChannel()) {
+        try (FileChannel rwChannel = new RandomAccessFile(QueryTerm.com + Indexing.codeName + "-" + field + "-" + term + ".txt", "rw").getChannel()) {
             ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, textToWrite.length());
             wrBuf.put(textToWrite.getBytes());
         }
     }
 
-    private static String messageIdTranslation(String idDocs, String path) throws IOException {
+   /**
+    * Fungsi untuk menyimpan document mapping kedalam hashmap
+    * @param path
+    * @throws IOException 
+    */
+    private static void dumpDocMapping(String path) throws IOException {
         String termMappingFileName = path + DOC_MAPPING;
-        RandomAccessFile file = new RandomAccessFile(termMappingFileName, "r");
-        long beg = 0, mid = 0;
-        long end = file.length();
-        boolean found = false;
-        while (beg < end && !found) {
-            mid = (beg + end) / 2;
-            file.seek(mid);
-            file.readLine();
-            String line = file.readLine().split("=")[0];
 
-            if (line.matches(idDocs)) {
-                found = true;
-                beg = mid;
-            } else {
-                if (Integer.valueOf(line) >= Integer.valueOf(idDocs)) {
-                    end = mid - 1;
-                } else {
-                    beg = mid + 1;
-                }
+        try {
+            // Open the file that is the first 
+            // command line parameter
+            FileInputStream fstream = new FileInputStream(termMappingFileName);
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            String[] a;
+            //Read File Line By Line
+            while ((strLine = br.readLine()) != null) {
+                a = strLine.split("="); 
+                tempDocMapping.put(a[0], a[1]);
             }
+            //Close the input stream
+            in.close();
+        } catch (Exception e) {//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
         }
-
-        if (found) {
-            file.seek(beg);
-            file.readLine();
-            return file.readLine().split("=")[1];
-        } else {
-            return "null";
-        }
-    }
-
-    private static String messageIdTranstalion2(String path) throws IOException {
-        String termMappingFileName = path + DOC_MAPPING;
-
-        HashMap<String, String> xx = new HashMap<>();
-
-
-       
-        
-        return null;
     }
 }

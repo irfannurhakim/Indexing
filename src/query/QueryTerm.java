@@ -17,6 +17,9 @@ public class QueryTerm {
     public static String com = isCompress ? "com_" : "";
 
     /**
+     * Kelas utama untuk proses pencarian
+     * Menerima argumen dari luar berupa lokasi path file index, field tujuan yang akan dicari
+     * dan term apa yang akan dicari
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {

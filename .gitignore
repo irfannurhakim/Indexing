@@ -1,6 +1,7 @@
 *.mf
 *.xml
 build/
+nbproject/
 *.txt
 *.class
 *.properties
