@@ -5,7 +5,7 @@
 package indexing;
 
 import com.indexing.controller.IndexCompression2;
-import com.indexing.model.BigConcurentHashMap;
+import com.indexing.model.BigConcurentMap;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class Compression {
 
-    static String fieldName = "body";
+    static String fieldName = "subject";
     static BufferedReader  invertedIndex = null;
     static BufferedReader  indexMapping = null;
     static BufferedWriter  cominvertedIndex = null;
@@ -118,7 +118,7 @@ public class Compression {
                 }
                
             } catch (IOException ex) {
-                Logger.getLogger(BigConcurentHashMap.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BigConcurentMap.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         comindexMapping.close();

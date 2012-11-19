@@ -69,8 +69,6 @@ public class Parser {
      * @return
      */
     public static String removeHTMLTag(String allString){
-        //return (Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>").matcher(allString).replaceAll(""));
-        //return allString.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
         return allString.replaceAll("\\<.*?\\>", "");
     }
     

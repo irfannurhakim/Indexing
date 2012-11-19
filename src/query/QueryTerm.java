@@ -28,11 +28,9 @@ public class QueryTerm {
             System.out.println("Usage : QueryTerm <index_file_location> <field:query_term>");
             System.exit(0);
         }
-
         String field = args[1].split(":")[0];
         String term = args[1].split(":")[1];
 
         QueryProcessor.doQuery(field, term, args[0]);
-
     }
 }

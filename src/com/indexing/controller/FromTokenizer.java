@@ -18,9 +18,10 @@ public class FromTokenizer {
 
     /**
      * author: Elisafina
-     * untuk menampung string from dari suatu file ke dalam bentuk hashmap
+     * untuk menampung term-term beserta posisi masing2 term
+     * pada field from dari suatu file ke dalam bentuk hashmap
      * @param from
-     * @return hashmap dari field from
+     * @return hashmap  term dan posisi dari field from
      */
     public static HashMap<String, String> getListFrom(String from) {
         HashMap<String, String> termList = new HashMap<String, String>();
@@ -42,7 +43,6 @@ public class FromTokenizer {
                 termList.put(key, freq);
             }
         }
-        //System.out.println(termList);
         return termList;
     }
 }

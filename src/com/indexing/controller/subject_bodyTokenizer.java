@@ -17,12 +17,13 @@ public class subject_bodyTokenizer {
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     /**
-     * author: Elisafina method untuk melakukan tokenisasi untuk field subject
+     * author: Elisafina 
+     * method untuk melakukan tokenisasi untuk field subject
      * dan body kemudian hasilnya ditampung pada hashmap yang berisi term dan
-     * jumlah kemunculan term pada dokumen tertentu.
+     * posisi-posisi kemunculan term pada dokumen tertentu.
      *
      * @param data
-     * @return
+     * @return hashmap  term dan posisi dari field subject atau body
      */
     public static HashMap<String, String> getListTerm(String data) {
         HashMap<String, String> termList = new HashMap<String, String>();
@@ -59,19 +60,15 @@ public class subject_bodyTokenizer {
                     }
                 }
             }
-            //} else {
-            //   System.out.println(s);
-            //}
-
         }
-        //System.out.println(termList);
         return termList;
     }
 
     /**
-     * author: Elisafina method untuk memasukan sebuah token ke hashmap dengan
-     * pengecekan, jika token tersebut sudah pernah ada maka value-nya akan
-     * ditambah 1
+     * author: Elisafina 
+     * method untuk memasukan sebuah term dan posisinya ke hashmap dengan
+     * pengecekan, jika term tersebut sudah pernah ada maka value-nya akan
+     * ditambah posisi yang baru dengan menggunakan pemisah ","
      *
      * @param key
      * @param map

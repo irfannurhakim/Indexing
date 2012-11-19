@@ -13,19 +13,14 @@ import java.util.HashMap;
 public class dateTokenizer {
 
     /**
-     * Author: Elisafina
-     * memotong string date menjadi 5 bagian yaitu:
-     * -hari : mon/tue/dll
-     * -tanggal dalam format : 13dec2000
-     * -jam dalam format : 16:39:00
-     * - zona waktu : pdt/pst
-     * - perbedaan waktu: -0700
+     * author: Elisafina
+     * untuk menampung term-term beserta posisi masing2 term
+     * pada field date dari suatu file ke dalam bentuk hashmap
      * @param date
-     * @return hashmap yang berisi token dari date
+     * @return hashmap  term dan posisi dari field date
      */
     public static HashMap<String, String> getListDate(String date) {
         HashMap<String, String> termList = new HashMap<String, String>();
-        //String[] terms = date.split("\\W");
          String[] terms = date.split("\\W");
         
         long pos=0;

@@ -16,13 +16,12 @@ public class toTokenizer {
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    /**
-     * author:Elisafina adalah untuk melakukan tokenisasi pada field to dengan
-     * cara memotong berdasarkan ", " atau "<>" sehingga didapatkan hashmap yang
-     * berisi alamat email tujuan dan nama kontak email tersebut(jika ada)
-     *
+     /**
+     * author: Elisafina
+     * untuk menampung term-term beserta posisi masing2 term
+     * pada field to dari suatu file ke dalam bentuk hashmap
      * @param to
-     * @return
+     * @return hashmap  term dan posisi dari field to
      */
     public static HashMap<String, String> getListTo(String to) {
         HashMap<String, String> termList = new HashMap<>();
@@ -43,7 +42,6 @@ public class toTokenizer {
                 termList.put(key, freq);
             }
         }
-        //System.out.println(termList);
         return termList;
     }
 }
